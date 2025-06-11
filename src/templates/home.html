@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
 {% block title %}Home{% endblock %}
-
 {% block content %}
-<h1>Hello world</h1>
-<p>Welcome to the home page!</p>
+<form method="POST" action="{{ url_for('main.home') }}">
+    <input type="text" placeholder="Gasto" id="expense-name" name="expense-name" required>
+    <input type="number" placeholder="Valor" id="expense-value" name="expense-value" required>
+    <input type="date" id="expense-date" name="expense-date" required>
+    <input type="text" placeholder="Categoria" id="expense-category" name="expense-category" required>
+    <button type="submit" id="add-expense">Adicionar Gasto</button>
+</form>
 {% endblock %}
