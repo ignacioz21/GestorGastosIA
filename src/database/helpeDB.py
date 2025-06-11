@@ -1,6 +1,7 @@
 from . import get_db_connection
 from datetime import datetime
 from mysql.connector import Error
+from src.IA.utils.tools import extrac_category
  
 def add_expense(name, amount, date, category):
     now = datetime.now();
@@ -49,3 +50,45 @@ def get_expenses():
                 print("MySQL connection closed")
     return []
 
+def PLM_expenses_loading(text, amount):
+    category = extrac_category(text)
+    now = datetime.now()
+
+    return {
+        'category': category,
+        'now': now,
+        'text': text,
+        'amount': amount
+    }
+
+
+def add_expenses_PLM(text, amount):
+    processessed_data = PLM_expenses_loading(text, amount)
+    if processessed_data['amount'] is None:
+        return False, "Amount is required"
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = """
+                INSERT INTO expensesPLN (CATEGORIA, AMOUNT, DATE, PROMPT) VALUES (%s, %s, %s, %s)
+                """
+            values = (
+                processessed_data['category'],
+                processessed_data['amount'],
+                processessed_data['now'],
+                processessed_data['text']
+            )
+            cursor.execute(query, values)
+            connection.commit()
+            print("PLM expense added successfully.")
+            return True, "Expense added successfully"
+        except Error as e:
+            print(f"Error while adding PLM expense: {str(e)})")
+            return False, f"Error while adding PLM expense: {e}"
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print("MySQL connection is closed.")
+    return False, "Database connection failed"
