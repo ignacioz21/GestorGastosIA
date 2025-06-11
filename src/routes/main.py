@@ -22,4 +22,5 @@ def home():
             print(f'An unexpected error occurred: {str(e)}')
             
         return redirect(url_for('main.home'))
-    return render_template('home.html')
+    expenses = get_expenses()
+    return render_template('home.html', expenses=expenses)

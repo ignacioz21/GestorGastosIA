@@ -30,16 +30,21 @@ def get_expenses():
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
-            query = "SELECT * FROM expenses"
-            cursor.execute(query)
+            cursor.execute("""
+                SELECT id, name, amount, 
+                       DATE_FORMAT(date, '%Y-%m-%d') as date, 
+                       category, created_at 
+                FROM expenses 
+                ORDER BY date DESC
+            """)
             expenses = cursor.fetchall()
             return expenses
         except Error as e:
-            print(f"Error while fetching expenses: {e}")
+            print(f"Error fetching expenses: {e}")
             return []
         finally:
             if connection.is_connected():
                 cursor.close()
                 connection.close()
-                print("MySQL connection is closed.")
+                print("MySQL connection closed")
     return []
