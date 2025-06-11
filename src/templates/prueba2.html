@@ -4,8 +4,11 @@
 
 {% block content %}
 <h2>Interprete lenguaje natural</h2>
-<form method="POST" action="{{ url_for('main.prueba2') }}">
+<form method="POST" action="{{ url_for('main.plm') }}">
+            <input type="number" name="expense_value" id="expense_value" 
+                   placeholder="Gasto en dólares" class="form-control" required>
              <textarea class="form-control" id="expense_text" name="expense_text" 
                       rows="3" placeholder="Example: I spent $25.50 on lunch at McDonald's"></textarea>
     <button type="submit" id="add-prompt">Enviar</button>
 </form>
+{% endblock %}

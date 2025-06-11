@@ -30,6 +30,15 @@ def init_db():
                                     CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                                 )
                             """)
+            cursor.execute("""
+                                CREATE TABLE IF NOT EXISTS expensesPLN (
+	                                ID INT AUTO_INCREMENT PRIMARY KEY,
+                                    CATEGORIA VARCHAR(100) NOT NULL,
+                                    AMOUNT DECIMAL NOT NULL,
+                                    DATE DATE NOT NULL,
+                                    PROMPT VARCHAR(255) NOT NULL
+                            )
+                           """)
             connection.commit()
             print("Database initialized successfully.")
         except Error as e:
