@@ -48,3 +48,4 @@ def get_expenses():
                 connection.close()
                 print("MySQL connection closed")
     return []
+
