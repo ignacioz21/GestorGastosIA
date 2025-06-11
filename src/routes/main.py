@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from src.database.helpeDB import add_expense, get_expenses
+from src.database.helpeDB import add_expense, get_expenses, PLM_expenses
 from datetime import datetime
 
 bp = Blueprint('main', __name__)
@@ -24,3 +24,14 @@ def home():
         return redirect(url_for('main.home'))
     expenses = get_expenses()
     return render_template('home.html', expenses=expenses)
+
+
+@bp.route('/PLM', methods=['GET', 'POST'])
+def plm():
+    text = request.form.get('exoense_text', '')
+    success, message = PLM_expenses(text)
+    if success:
+        print('PLM expenses processed successfully.')
+    else:
+        print(f'Error processing PLM expenses: {message}')
+    return render_template('plm.html')
