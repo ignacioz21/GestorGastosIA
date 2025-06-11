@@ -2,6 +2,7 @@
 
 {% block title %}Home{% endblock %}
 {% block content %}
+<h2>Add expense</h2>
 <form method="POST" action="{{ url_for('main.home') }}">
     <input type="text" placeholder="Gasto" id="expense-name" name="expense-name" required>
     <input type="number" placeholder="Valor" id="expense-value" name="expense-value" required>
@@ -9,4 +10,33 @@
     <input type="text" placeholder="Categoria" id="expense-category" name="expense-category" required>
     <button type="submit" id="add-expense">Adicionar Gasto</button>
 </form>
+<div class="expenses-container">
+    <h2>Spendings</h2>
+    {% if expenses %}
+        <div class="table-responsive">
+            <table class="table-stripped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>category</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                        <tr>
+                            <td>{{ expense.name }}</td>
+                            <td>${{ "%.2f"|format(expense.amount|float) }}</td>
+                            <td>{{ expense.date }}</td>
+                            <td>{{ expense.category }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="text-muted">No hay gastos registrados</p>
+    {% endif %}
+</div>
 {% endblock %}
