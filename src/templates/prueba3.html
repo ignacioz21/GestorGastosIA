@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}OCR Ticket{% endblock %}
+
+{% block content %}
+<h2>OCR Ticket</h2>
+<form method="POST" action="{{ url_for('main.ocr') }}" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="ticket_image" class="form-label">Sube una imagen del ticket</label>
+        <input type="file" class="form-control" id="ticket_image" name="ticket_image" accept="image/*" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Enviar</button>
+</form>
+{% endblock %}
