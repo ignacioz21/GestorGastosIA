@@ -36,3 +36,8 @@ def plm():
     else:
         print(f'Error processing PLM expenses: {message}')
     return render_template('prueba2.html')
+
+
+@bp.route('/OCR', methods=['GET', 'POST'])
+def ocr():
+    return render_template('prueba3.html')
