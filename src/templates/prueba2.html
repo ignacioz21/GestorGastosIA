@@ -9,4 +9,35 @@
     <textarea name="prompt_text" required></textarea>
     <button type="submit" id="add-prompt">Enviar</button>
 </form>
+
+<div class="expenses-container">
+    <h2>Resultados</h2>
+    {% if expenses %}
+        <div class="table-responsive">
+            <table class="table-stripped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Amount</th>
+                        <th>Fecha</th>
+                        <th>Categoría</th>
+                        <th>Prompt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                        <tr>
+                            <td>{{ expense.id }}</td>
+                            <td>${{ "%.2f"|format(expense.amount|float) }}</td>
+                            <td>{{ expense.date }}</td>
+                            <td>{{ expense.categoria }}</td>
+                            <td>{{ expense.prompt }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-muted">No hay gastos registrados</p>
+    {% endif %}
 {% endblock %}

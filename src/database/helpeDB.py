@@ -92,3 +92,28 @@ def add_expenses_PLM(text, amount):
                 connection.close()
                 print("MySQL connection is closed.")
     return False, "Database connection failed"
+
+
+def get_expenses_PLM():
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT id, categoria, amount, 
+                       DATE_FORMAT(date, '%Y-%m-%d') as date, 
+                       prompt 
+                FROM expensesPLN 
+                ORDER BY date DESC
+            """)
+            expenses = cursor.fetchall()
+            return expenses
+        except Error as e:
+            print(f"Error fetching PLM expenses: {e}")
+            return []
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print("MySQL connection closed")
+    return []

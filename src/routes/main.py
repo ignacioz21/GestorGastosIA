@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from src.database.helpeDB import add_expense, get_expenses, add_expenses_PLM
+from src.database.helpeDB import add_expense, get_expenses, add_expenses_PLM, get_expenses_PLM
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from src.IA.utils.image_processing import extract_text, extract_text_pdf
@@ -58,8 +58,9 @@ def plm():
             flash(f'Unexpected error: {str(e)}', 'error')
             
         return redirect(url_for('main.plm'))
-        
-    return render_template('prueba2.html')
+    
+    expenses = get_expenses_PLM()    
+    return render_template('prueba2.html', expenses=expenses)
 
 
 @bp.route('/OCR', methods=['GET', 'POST'])
