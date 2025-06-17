@@ -1,10 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-from src.database.helpeDB import add_expense, get_expenses, add_expenses_PLM, get_expenses_PLM
-from datetime import datetime
+from flask import Blueprint, request, flash, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
+import os
 from src.IA.utils.image_processing import extract_text, extract_text_pdf
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+from src.database.helpeDB import add_expense, get_expenses, add_expenses_PLM, get_expenses_PLM
+from datetime import datetime
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -67,18 +69,42 @@ def plm():
 def ocr():
     if request.method == 'POST':
         if 'ticket_image' not in request.files:
-            print('No file part in the request.')
-            return redirect(request.url)
+            print('No file uploaded', 'error')
+            return redirect(url_for('main.ocr'))
         
         file = request.files['ticket_image']
+        
         if file.filename == '':
-            print('No file selected.')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
+            print('No file selected', 'error')
+            return redirect(url_for('main.ocr'))
+            
+        try:
+            file_ext = file.filename.rsplit('.', 1)[1].lower()
+            
+            # Save file temporarily
+            temp_path = os.path.join('temp', secure_filename(file.filename))
+            os.makedirs('temp', exist_ok=True)
+            file.save(temp_path)
+            
             try:
-                text = extract_text(file)
-                print(f'Extracted text: {text}')
-            except Exception as e:
-                print(f'Error extracting text: {str(e)}')
+                if file_ext == 'pdf':
+                    text = extract_text_pdf(temp_path)
+                else:
+                    text = extract_text(temp_path)
+                    
+                if text:
+                    print(f'Extracted text: {text}', 'success')
+                else:
+                    print('No text could be extracted', 'warning')
+                    
+            finally:
+                # Clean up temp file
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
+                    
+        except Exception as e:
+            print(f'Error processing file: {str(e)}', 'error')
+            
         return redirect(url_for('main.ocr'))
+        
     return render_template('prueba3.html')
