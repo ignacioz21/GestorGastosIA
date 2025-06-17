@@ -6,7 +6,12 @@
 <form method="POST" action="{{ url_for('main.ocr') }}" enctype="multipart/form-data">
     <div class="mb-3">
         <label for="ticket_image" class="form-label">Sube una imagen del ticket</label>
-        <input type="file" class="form-control" id="ticket_image" name="ticket_image" required>
+        <input type="file" 
+                   class="form-control" 
+                   id="ticket_image" 
+                   name="ticket_image" 
+                   accept=".pdf,.png,.jpg,.jpeg"
+                   required>
     </div>
     <button type="submit" class="btn btn-primary">Enviar</button>
 </form>
