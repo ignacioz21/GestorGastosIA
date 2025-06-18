@@ -14,5 +14,28 @@
                    required>
     </div>
     <button type="submit" class="btn btn-primary">Enviar</button>
+    <table class="table-stripped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Categoria</th>
+                        <th>Monto</th>
+                        <th>Fecha</th>
+                        <th>Nombre</th>
+                        <th>Creado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                        <tr>
+                            <td>{{ expense.id }}</td>
+                            <td>${{ "%.2f"|format(expense.amount|float) }}</td>
+                            <td>{{ expense.date }}</td>
+                            <td>{{ expense.categoria }}</td>
+                            <td>{{ expense.prompt }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 </form>
 {% endblock %}
