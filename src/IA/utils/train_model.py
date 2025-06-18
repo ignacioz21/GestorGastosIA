@@ -1,39 +1,43 @@
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from joblib import dump
 import os
 from pathlib import Path
 
-# Get the absolute path to the project root
+# Set up paths
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+DATA_PATH = os.path.join(BASE_DIR, 'dataset', 'text_facturas.csv')
+MODEL_PATH = os.path.join(BASE_DIR, 'IA', 'models', 'bills_models.pkl')
+VECTOR_PATH = os.path.join(BASE_DIR, 'IA', 'models', 'bills_vector.pkl')
 
-# Construct paths relative to the project root
-DATA_PATH = os.path.join(BASE_DIR, 'dataset', 'datos.csv')
-MODEL_PATH = os.path.join(BASE_DIR, 'IA', 'models', 'spending_models.pkl')
-VECTOR_PATH = os.path.join(BASE_DIR, 'IA', 'models', 'spending_vector.pkl')
-
-# Check if data file exists
-if not os.path.exists(DATA_PATH):
-    raise FileNotFoundError(f"Data file not found at: {DATA_PATH}")
-
-# Read and process data
+# Load and prepare data
 datos = pd.read_csv(DATA_PATH)
+datos['date'] = pd.to_datetime(datos['date'], errors='coerce')
+datos['date'] = datos['date'].dt.month.fillna(-1)
 
-texts = datos['descripcion']
-categories = datos['categoria']
+# Create vectorizer and transform text
+vectorizer = TfidfVectorizer()
+X_text = vectorizer.fit_transform(datos['texto_extraido'])
 
-vector = TfidfVectorizer()
-X = vector.fit_transform(texts)
+# Create the preprocessing pipeline for structured data
+structured_preprocessor = ColumnTransformer(
+    transformers=[
+        ('numeric', StandardScaler(), ['amount']),
+        ('categorical', OneHotEncoder(sparse_output=False), ['date'])
+    ]
+)
 
+# Create and fit the model
 model = LogisticRegression()
-model.fit(X, categories)
+model.fit(X_text, datos['categoria'])
 
-# Create models directory if it doesn't exist
+# Save both the model and vectorizer
 os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-
-# Save models
 dump(model, MODEL_PATH)
-dump(vector, VECTOR_PATH)
+dump(vectorizer, VECTOR_PATH)
 
 print('Model and vectorizer saved successfully.')

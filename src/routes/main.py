@@ -81,27 +81,17 @@ def ocr():
         try:
             file_ext = file.filename.rsplit('.', 1)[1].lower()
             
-            # Save file temporarily
-            temp_path = os.path.join('temp', secure_filename(file.filename))
-            os.makedirs('temp', exist_ok=True)
-            file.save(temp_path)
-            
-            try:
-                if file_ext == 'pdf':
-                    text = extract_text_pdf(temp_path)
-                else:
-                    text = extract_text(temp_path)
-                    
-                if text:
-                    print(f'Extracted text: {text}', 'success')
-                else:
-                    print('No text could be extracted', 'warning')
-                    
-            finally:
-                # Clean up temp file
-                if os.path.exists(temp_path):
-                    os.remove(temp_path)
-                    
+            # Process file directly without saving
+            if file_ext == 'pdf':
+                text = extract_text_pdf(file)
+            else:
+                text = extract_text(file)
+                
+            if text:
+                print(f'{text}', 'success')
+            else:
+                print('No text could be extracted', 'warning')
+                
         except Exception as e:
             print(f'Error processing file: {str(e)}', 'error')
             
