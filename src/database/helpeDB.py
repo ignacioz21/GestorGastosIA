@@ -117,3 +117,52 @@ def get_expenses_PLM():
                 connection.close()
                 print("MySQL connection closed")
     return []
+
+
+def add_expenses_OCR(categoria, amount, date, nombre):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = """
+                INSERT INTO expensesOCR (CATEGORIA, AMOUNT, DATE, NAME)
+                VALUES (%s, %s, %s, %s)
+            """
+            cursor.execute(query, (categoria, amount, date, nombre))
+            connection.commit()
+            print("OCR expense added successfully.")
+            return True
+        except Error as e:
+            print(f"Error while adding OCR expense: {e}")
+            return False
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print("MySQL connection is closed.")
+    return False
+
+
+def get_expenses_OCR():
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT id, categoria, amount, 
+                       DATE_FORMAT(DATE, '%Y-%m-%d') as date, 
+                       name 
+                FROM expensesOCR 
+                ORDER BY DATE DESC
+            """)
+            expenses = cursor.fetchall()
+            return expenses
+        except Error as e:
+            print(f"Error fetching OCR expenses: {e}")
+            return []
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print("MySQL connection closed")
+    return []
