@@ -46,16 +46,36 @@ def extract_bills_atributes(text):
         date_pattern = r'\d{1,2}[-/]\d{1,2}[-/]\d{2,4}'
         dates = re.findall(date_pattern, text)
         date = dates[0] if dates else None
+        
+        name_patterns = [
+            r'(?i)empresa:?\s*([A-Za-z0-9\s&]+?)(?=\s*(?:S\.A\.|LTDA\.?|INC\.?|$))',
+            r'(?i)negocio:?\s*([A-Za-z0-9\s&]+)',
+            r'(?i)tienda:?\s*([A-Za-z0-9\s&]+)',
+            r'(?i)factura\s+de:?\s*([A-Za-z0-9\s&]+)'
+        ]
+        
+        name = None
+        for pattern in name_patterns:
+            matches = re.search(pattern, text)
+            if matches:
+                name = matches.group(1).strip()
+                break
+                
+        if not name and text:
+            first_line = text.split('\n')[0].strip()
+            name = first_line if first_line else "Unknown Vendor"
 
         return {
             'category' : category,
             'amount' : amount,
-            'date' : date
+            'date' : date,
+            'name' : name
         }
     except Exception as e:
         print(f"Error extracting bill attributes: {e}")
         return {
             'category': "Others",
             'amount': 0.0,
-            'date': None
+            'date': None,
+            'name': "Unknown Vendor"
         }
