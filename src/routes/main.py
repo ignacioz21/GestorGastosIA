@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 from src.IA.utils.image_processing import extract_text, extract_text_pdf
 
-from src.database.helpeDB import add_expense, get_expenses, add_expenses_PLM, get_expenses_PLM
+from src.database.helpeDB import add_expense, get_expenses, add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR
 from datetime import datetime
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
@@ -88,7 +88,10 @@ def ocr():
                 text = extract_text(file)
                 
             if text:
-                print(f'{text}', 'success')
+                print('Text extracted successfully:')
+                add_expenses_OCR(text)
+
+
             else:
                 print('No text could be extracted', 'warning')
                 

@@ -37,7 +37,8 @@ def extract_text_pdf(file):
                         image_bytes.seek(0)
                         pil_image = Image.open(image_bytes)
                         text += pytesseract.image_to_string(pil_image)
-        return text.strip()
+                        final_text = text.replace('\n', '\\n').replace('\r', '\\n')
+        return final_text.strip()
     except Exception as e:
         raise Exception(f"Error extracting text from PDF: {str(e)}")
 

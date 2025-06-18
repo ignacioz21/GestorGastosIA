@@ -1,7 +1,7 @@
 from . import get_db_connection
 from datetime import datetime
 from mysql.connector import Error
-from src.IA.utils.tools import extrac_category
+from src.IA.utils.tools import extrac_category, extract_bills_atributes
  
 def add_expense(name, amount, date, category):
     now = datetime.now();
@@ -94,6 +94,22 @@ def add_expenses_PLM(text, amount):
     return False, "Database connection failed"
 
 
+
+def atributes_extraction_OCR(text):
+    try:
+        atributes = extract_bills_atributes(text)
+        if atributes['date'] is None:
+            atributes['date'] = datetime.now().strftime('%Y-%m-%d')
+        return atributes
+    except Exception as e:
+        print(f"Error extracting attributes from OCR text: {e}")
+        return {
+            'category': "Others",
+            'amount': 0.0,
+            'date': datetime.now().strftime('%Y-%m-%d') # Escape single quotes for SQL
+        }
+        
+
 def get_expenses_PLM():
     connection = get_db_connection()
     if connection:
@@ -119,7 +135,8 @@ def get_expenses_PLM():
     return []
 
 
-def add_expenses_OCR(categoria, amount, date, nombre):
+def add_expenses_OCR(text):
+    processed_attributes = atributes_extraction_OCR(text)
     connection = get_db_connection()
     if connection:
         try:
@@ -128,8 +145,15 @@ def add_expenses_OCR(categoria, amount, date, nombre):
                 INSERT INTO expensesOCR (CATEGORIA, AMOUNT, DATE, NAME)
                 VALUES (%s, %s, %s, %s)
             """
-            cursor.execute(query, (categoria, amount, date, nombre))
-            connection.commit()
+            values = (
+                processed_attributes['category'],
+                processed_attributes['amount'],
+                processed_attributes['date'],
+                processed_attributes['name']
+            )
+            print(values)
+            # cursor.execute(query, values)
+            # connection.commit()
             print("OCR expense added successfully.")
             return True
         except Error as e:
