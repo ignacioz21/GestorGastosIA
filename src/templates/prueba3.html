@@ -5,37 +5,53 @@
 <h2>OCR Ticket</h2>
 <form method="POST" action="{{ url_for('main.ocr') }}" enctype="multipart/form-data">
     <div class="mb-3">
-        <label for="ticket_image" class="form-label">Sube una imagen del ticket</label>
-        <input type="file" 
-                   class="form-control" 
-                   id="ticket_image" 
-                   name="ticket_image" 
-                   accept=".pdf,.png,.jpg,.jpeg"
-                   required>
+        <label for="ticket_image" class="form-label">Sube tu imagen o PDF</label>
+        <input type="file" class="form-control" id="ticket_image" name="ticket_image"  accept=".pdf,.png,.jpg,.jpeg">
     </div>
-    <button type="submit" class="btn btn-primary">Enviar</button>
-    <table class="table-stripped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Categoria</th>
-                        <th>Monto</th>
-                        <th>Fecha</th>
-                        <th>Nombre</th>
-                        <th>Creado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for expense in expenses %}
-                        <tr>
-                            <td>{{ expense.id }}</td>
-                            <td>${{ "%.2f"|format(expense.amount|float) }}</td>
-                            <td>{{ expense.date }}</td>
-                            <td>{{ expense.categoria }}</td>
-                            <td>{{ expense.prompt }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <button type="submit" name="action" value="ticket_image" class="btn btn-primary">Enviar</button>
 </form>
+
+{% if expenses %}
+    <hr>
+    <h3>Editar atributos extraídos</h3>
+    <form method="POST" action="{{ url_for('main.ocr') }}">
+        <div class="mb-3">
+            <label for="category" class="form-label">Categoría</label>
+            <input type="text" class="form-control" id="category" name="ocr-category" value="{{ expenses.get('category', '') }}">
+        </div>
+        <div class="mb-3">
+            <label for="amount" class="form-label">Monto</label>
+            <input type="number" class="form-control" id="amount" name="ocr-amount" value="{{ expenses.get('amount', '') }}">
+        </div>
+        <div class="mb-3">
+            <label for="date" class="form-label">Fecha</label>
+            <input type="date" class="form-control" id="date" name="ocr-date" value="{{ expenses.get('date', '') }}">
+        </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="name" name="ocr-name" value="{{ expenses.get('name', '') }}">
+        </div>
+        <button type="submit" class="btn btn-success" name="action" value="save-db">Guardar Gasto</button>
+    </form>
+{% endif %}
+<script>
+document.getElementById('extract-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    let form = document.getElementById('ocr-form');
+    let formData = new FormData(form);
+    formData.set('action', 'ticket_image');
+
+    fetch("{{ url_for('main.ocr') }}", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.text())
+    .then(html => {
+        // Reemplaza solo la parte de los resultados, no toda la página
+        document.getElementById('ocr-result').innerHTML = 
+            new DOMParser().parseFromString(html, "text/html")
+            .getElementById('ocr-result').innerHTML;
+    });
+});
+</script>
 {% endblock %}

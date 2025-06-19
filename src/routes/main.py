@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 from src.IA.utils.image_processing import extract_text, extract_text_pdf
 
-from src.database.helpeDB import add_expense, get_expenses, add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR
+from src.database.helpeDB import add_expense, get_expenses, add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR, atributes_extraction_OCR
 from datetime import datetime
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
@@ -68,36 +68,45 @@ def plm():
 @bp.route('/OCR', methods=['GET', 'POST'])
 def ocr():
     if request.method == 'POST':
-        if 'ticket_image' not in request.files:
-            print('No file uploaded', 'error')
-            return redirect(url_for('main.ocr'))
-        
-        file = request.files['ticket_image']
-        
-        if file.filename == '':
-            print('No file selected', 'error')
-            return redirect(url_for('main.ocr'))
+        action = request.form.get('action')
+        if action == "ticket_image":
+            if 'ticket_image' not in request.files:
+                print('No file uploaded', 'error')
+                return redirect(url_for('main.ocr'))
             
-        try:
-            file_ext = file.filename.rsplit('.', 1)[1].lower()
+            file = request.files['ticket_image']
             
-            # Process file directly without saving
-            if file_ext == 'pdf':
-                text = extract_text_pdf(file)
-            else:
-                text = extract_text(file)
+            if file.filename == '':
+                print('No file selected', 'error')
+                return redirect(url_for('main.ocr'))
                 
-            if text:
-                print('Text extracted successfully:')
-                add_expenses_OCR(text)
+            try:
+                file_ext = file.filename.rsplit('.', 1)[1].lower()
+                
+                # Process file directly without saving
+                if file_ext == 'pdf':
+                    text = extract_text_pdf(file)
+                else:
+                    text = extract_text(file)
+                    
+                if text:
+                    print('Text extracted successfully:')
+                    atributes = atributes_extraction_OCR(text)
 
 
-            else:
-                print('No text could be extracted', 'warning')
+                else:
+                    print('No text could be extracted', 'warning')
+                    
+            except Exception as e:
+                print(f'Error processing file: {str(e)}', 'error')
                 
-        except Exception as e:
-            print(f'Error processing file: {str(e)}', 'error')
+            return render_template('prueba3.html', expenses=atributes)
+        elif action == "save-db":
+            name = request.form['ocr-name']
+            amount = float(request.form.get('ocr-amount'))
+            date = datetime.strptime(request.form['ocr-date'], '%Y-%m-%d').date()
+            category = request.form['ocr-category']
+            add_expenses_OCR(category, amount, date, name)
             
-        return redirect(url_for('main.ocr'))
-        
-    return render_template('prueba3.html')
+
+    return render_template('prueba3.html', expenses={})
