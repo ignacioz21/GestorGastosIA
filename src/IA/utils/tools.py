@@ -68,8 +68,7 @@ def extract_bills_atributes(text):
         return {
             'category' : category,
             'amount' : amount,
-            'date' : date,
-            'name' : name
+            'date' : date
         }
     except Exception as e:
         print(f"Error extracting bill attributes: {e}")

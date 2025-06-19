@@ -135,25 +135,19 @@ def get_expenses_PLM():
     return []
 
 
-def add_expenses_OCR(text):
-    processed_attributes = atributes_extraction_OCR(text)
+def add_expenses_OCR(category, amount, date, name):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor()
             query = """
-                INSERT INTO expensesOCR (CATEGORIA, AMOUNT, DATE, NAME)
+                INSERT INTO expensesOCR (CATEGORIA, AMOUNT, DATE, NOMBRE)
                 VALUES (%s, %s, %s, %s)
             """
-            values = (
-                processed_attributes['category'],
-                processed_attributes['amount'],
-                processed_attributes['date'],
-                processed_attributes['name']
-            )
+            values = (category, amount, date, name)
             print(values)
-            # cursor.execute(query, values)
-            # connection.commit()
+            cursor.execute(query, values)
+            connection.commit()
             print("OCR expense added successfully.")
             return True
         except Error as e:
