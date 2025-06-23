@@ -1,8 +1,7 @@
 Flask
 mysql-connector-python
-pandas
-scikit-learn
-joblib
-pillow
 pytesseract
 pdfplumber
+Pillow
+joblib
+scikit-learn
