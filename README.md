@@ -116,4 +116,4 @@ Este proyecto está bajo la licencia MIT.
 
 ## 🙋‍♂️ Autor
 
-Desarrollado por [Tu Nombre o Usuario de GitHub].
+Desarrollado por ignacioz21.
