@@ -3,5 +3,5 @@ mysql-connector-python
 pytesseract
 pdfplumber
 Pillow
-scikit-learn
 joblib
+scikit-learn
