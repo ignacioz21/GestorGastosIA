@@ -100,7 +100,9 @@ def ocr():
             except Exception as e:
                 print(f'Error processing file: {str(e)}', 'error')
                 
-            return render_template('prueba3.html', expenses=atributes)
+
+            text = get_expenses_OCR()
+            return render_template('prueba3.html', expenses=atributes, text=text)
         elif action == "save-db":
             name = request.form['ocr-name']
             amount = float(request.form.get('ocr-amount'))
@@ -108,5 +110,5 @@ def ocr():
             category = request.form['ocr-category']
             add_expenses_OCR(category, amount, date, name)
             
-
-    return render_template('prueba3.html', expenses={})
+    text = get_expenses_OCR()
+    return render_template('prueba3.html', expenses={}, text=text)  

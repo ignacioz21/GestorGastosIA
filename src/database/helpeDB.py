@@ -171,7 +171,7 @@ def get_expenses_OCR():
             cursor.execute("""
                 SELECT id, categoria, amount, 
                        DATE_FORMAT(DATE, '%Y-%m-%d') as date, 
-                       name 
+                       nombre 
                 FROM expensesOCR 
                 ORDER BY DATE DESC
             """)
