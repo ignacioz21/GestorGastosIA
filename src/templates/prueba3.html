@@ -34,6 +34,33 @@
         <button type="submit" class="btn btn-success" name="action" value="save-db">Guardar Gasto</button>
     </form>
 {% endif %}
+
+{% if expenses_list %}
+    <hr>
+    <h3>Gastos registrados por OCR</h3>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Categoría</th>
+                    <th>Monto</th>
+                    <th>Fecha</th>
+                    <th>Nombre</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for gasto in expenses_list %}
+                <tr>
+                    <td>{{ gasto.category }}</td>
+                    <td>{{ gasto.amount }}</td>
+                    <td>{{ gasto.date }}</td>
+                    <td>{{ gasto.name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}
 <script>
 document.getElementById('extract-btn').addEventListener('click', function(e) {
     e.preventDefault();

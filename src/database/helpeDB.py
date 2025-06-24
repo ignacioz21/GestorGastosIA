@@ -1,7 +1,7 @@
 from . import get_db_connection
 from datetime import datetime
 from mysql.connector import Error
-from src.IA.utils.tools import extrac_category, extract_bills_atributes
+from src.IA.utils.tools import extrac_category, extract_bills_atributes, change_date_format
  
 def add_expense(name, amount, date, category):
     now = datetime.now();
@@ -100,6 +100,8 @@ def atributes_extraction_OCR(text):
         atributes = extract_bills_atributes(text)
         if atributes['date'] is None:
             atributes['date'] = datetime.now().strftime('%Y-%m-%d')
+            atributes['date'] = change_date_format(atributes['date'])
+            print(atributes['date'])
         return atributes
     except Exception as e:
         print(f"Error extracting attributes from OCR text: {e}")

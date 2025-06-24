@@ -2,6 +2,7 @@ from joblib import load
 import os
 from pathlib import Path
 import re
+from datetime import datetime
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -46,6 +47,7 @@ def extract_bills_atributes(text):
         date_pattern = r'\d{1,2}[-/]\d{1,2}[-/]\d{2,4}'
         dates = re.findall(date_pattern, text)
         date = dates[0] if dates else None
+        date = change_date_format(date)
         
         name_patterns = [
             r'(?i)empresa:?\s*([A-Za-z0-9\s&]+?)(?=\s*(?:S\.A\.|LTDA\.?|INC\.?|$))',
@@ -78,3 +80,15 @@ def extract_bills_atributes(text):
             'date': None,
             'name': "Unknown Vendor"
         }
+    
+
+def change_date_format(date_str):
+    try:
+        if date_str:
+            return datetime.strptime(date_str, '%d/%m/%Y').strftime('%Y-%m-%d')
+        return None
+    except ValueError:
+        return None
+    except Exception as e:
+        print(f"Error changing date format: {e}")
+        return None
