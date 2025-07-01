@@ -7,7 +7,7 @@ def get_db_connection():
             host='localhost',
             database='gestorIA',
             user = 'root',
-            password = '123456789'
+            password = '07-04-07'
         )
         return connection
     except Error as e:
