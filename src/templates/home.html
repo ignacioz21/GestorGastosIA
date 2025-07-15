@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}Home{% endblock %}
+{% block CSS %}
+<link rel="stylesheet", href="{{ url_for('static', filename='css/home.css') }}")>
+{% endblock %}
 {% block content %}
+<!--
 <h2>Add expense</h2>
 <form method="POST" action="{{ url_for('main.home') }}">
     <input type="text" placeholder="Gasto" id="expense-name" name="expense-name" required>
@@ -38,5 +42,77 @@
         {% else %}
             <p class="text-muted">No hay gastos registrados</p>
     {% endif %}
+</div>
+-->
+<div class="home-section">
+    <div class="boxes">
+        <h2 id="tile-box">
+            Expenses
+        </h2>
+        <div class="box">
+            <p id="value">
+                0.00$
+            </p>
+            <i class="bi bi-coin" id="coin-1"></i>
+        </div>
+    </div>
+    <div class="boxes">
+        <h2 id="tile-box">
+            Income
+        </h2>
+        <div class="box">
+            <p id="value">
+                0.00$
+            </p>
+            <i class="bi bi-coin" id="coin-2"></i>
+        </div>
+    </div>
+    <div class="boxes">
+        <h2 id="tile-box">
+            % Savings
+        </h2>
+        <div class="box">
+            <p id="value">
+                0.00%
+            </p>
+            <i class="bi bi-piggy-bank-fill"></i>
+        </div>
+    </div>
+</div>
+<div class="details">
+    <div class="categories">
+        <h2 id="categories-title">Categories</h2>
+        <div class="box-categories">
+            <div class="category-item">
+                <i class="bi bi-droplet-fill" id="icon-1"></i>
+                <div id="icon-bar-1"></div>
+            </div>
+            <div class="category-item">
+                <i class="bi bi-nintendo-switch" id="icon-2"></i>
+                <div id="icon-bar-2"></div>
+            </div>
+            <div class="category-item">
+                <i class="bi bi-star-fill" id="icon-3"></i>
+                <div id="icon-bar-3"></div>
+            </div>
+        </div>
+    </div>
+    <div class="history">
+        <h2 id="history-title">Last Expensive</h2>
+        <div class="box-history">
+            <div class="history-item">
+                <p class="history-item-name" id="history-element">Expense Name</p>
+                <p class="history-item-amount" id="history-element">$0.00</p>
+                <p class="history-item-date" id="history-element">2023-10-01</p>
+                <p class="history-item-category" id="history-element">Category</p>
+            </div>
+            <div class="history-item">
+                <p class="history-item-name" id="history-element">Expense Name</p>
+                <p class="history-item-amount" id="history-element">$0.00</p>
+                <p class="history-item-date" id="history-element">2023-10-01</p>
+                <p class="history-item-category" id="history-element">Category</p>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
