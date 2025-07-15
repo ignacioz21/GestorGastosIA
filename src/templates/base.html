@@ -22,14 +22,15 @@
     <div class="main-block">
         <header class="full-header">
             <div id="top-section">
-                <a id="btn-header" href="">
+                <a name="openModalBtn" id="btn-header" href="">
                     <i class="bi bi-house-fill"></i>    
                     <span id="title_header">Home</span>
                 </a>
-                <a id="btn-header" href="">
+                <!-- FIXED: Changed to button with proper ID -->
+                <button id="openModalBtn" style="background: none; border: none; color: white; font-family: var(--var-primary-text); font-weight: 600; padding: 0px 10px; cursor: pointer; font-size: 20px;">
                     <i class="bi bi-cash"></i>
                     <span id="title_header">Añadir</span>
-                </a>
+                </button>
                 <a id="btn-header" href="">
                     <i class="bi bi-cash-stack"></i>
                     <span id="title_header">Gastos</span>
@@ -43,11 +44,41 @@
         <main class="content">
             {% block content %}
             {% endblock %}
+            <!-- FIXED: Changed name to id and fixed structure -->
+            <div id="popupOverlay" class="add-expense-popup">
+                <div class="popup-content">
+                    <button id="closePopup" class="btn-close" aria-label="Close">
+                        <i class="bi bi-x-square-fill"></i>
+                    </button>
+                    <div class="pop-up-options">
+                        <a id="btn-option-selected" href="">Manual</a>
+                        <a id="btn-option" href="">Escanear factura</a>
+                        <a id="btn-option" href="">Clasificador IA</a>
+                    </div>
+                    <h2>Add Expense</h2>
+                    <form class="popup-form" method="POST">
+                        <div class="first-section">
+                            <input type="text" placeholder="Gasto" id="expense-name" name="expense-name" required>
+                        </div>
+                        <div class="second-section">
+                            <input type="number" placeholder="Valor" id="expense-value" name="expense-value" required>
+                            <input type="date" id="expense-date" name="expense-date" required>
+                        </div>
+                        <div class="third-section">
+                            <input type="text" placeholder="Categoria" id="expense-category" name="expense-category" required>
+                        </div>
+                        <button id="btn-add" type="submit">Adicionar Gasto</button>
+                    </form>
+                </div>
+            </div>
         </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" 
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
     <!-- <script src="{{ url_for('static', filename='js/app,js') }}"></script>   -->
+    <script src="{{ url_for('static', filename='js/base.js') }}"></script>
+    {% block JS %}
+    {% endblock %}
 </body>
 </html>
