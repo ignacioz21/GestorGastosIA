@@ -22,15 +22,15 @@
     <div class="main-block">
         <header class="full-header">
             <div id="top-section">
-                <a name="openModalBtn" id="btn-header" href="">
+                <a class="openModalBtn" id="btn-header" href="">
                     <i class="bi bi-house-fill"></i>    
                     <span id="title_header">Home</span>
                 </a>
                 <!-- FIXED: Changed to button with proper ID -->
-                <button id="openModalBtn" style="background: none; border: none; color: white; font-family: var(--var-primary-text); font-weight: 600; padding: 0px 10px; cursor: pointer; font-size: 20px;">
+                <a id="btn-header" name="openModalBtn" href="#" onclick="return false;">
                     <i class="bi bi-cash"></i>
                     <span id="title_header">Añadir</span>
-                </button>
+                </a>
                 <a id="btn-header" href="">
                     <i class="bi bi-cash-stack"></i>
                     <span id="title_header">Gastos</span>
@@ -44,6 +44,7 @@
         <main class="content">
             {% block content %}
             {% endblock %}
+            <!-- Manual expense pop up -->
             <!-- FIXED: Changed name to id and fixed structure -->
             <div id="popupOverlay" class="add-expense-popup">
                 <div class="popup-content">
@@ -51,9 +52,9 @@
                         <i class="bi bi-x-square-fill"></i>
                     </button>
                     <div class="pop-up-options">
-                        <a id="btn-option-selected" href="">Manual</a>
-                        <a id="btn-option" href="">Escanear factura</a>
-                        <a id="btn-option" href="">Clasificador IA</a>
+                        <a id="btn-option-selected" name="openModalBtn" href="#" onclick="return false;">Manual</a>
+                        <a id="btn-option" name="scan-bill" href="#" onclick="return false;">Escanear factura</a>
+                        <a id="btn-option" name="go-ia" href="#" onclick="return false;">Clasificador IA</a>
                     </div>
                     <h2>Add Expense</h2>
                     <form class="popup-form" method="POST">
@@ -71,9 +72,97 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Bill scan pop up -->
+            <div id="popupOverlayBillScan" class="scan-bill-popup">
+                <div class="popup-content-scan">
+                    <button id="closePopupBillScan" class="btn-close" aria-label="Close">
+                        <i class="bi bi-x-square-fill"></i>
+                    </button>
+                    <div class="pop-up-options">
+                        <a id="btn-option"  name="openModalBtn" href="#" onclick="return false;">Manual</a>
+                        <a id="btn-option-selected" name="scan-bill" href="#" onclick="return false;">Escanear factura</a>
+                        <a id="btn-option" name="go-ia" href="#" onclick="return false;">Clasificador IA</a>
+                    </div>
+
+                    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                        <div class="upload-icon">
+                            <i class="bi bi-cloud-arrow-down"></i>
+                        </div>
+                        <div class="upload-text">Upload your file</div>
+                        <input type="file" id="fileInput" class="hidden-file-input" accept=".pdf,.png,.jpg,.jpeg">
+                    </div>
+                    <div class="amount-section">
+                        <div class="amount-label">Amount</div>
+                        <div class="amount-value">0.00 $</div>
+                    </div>
+
+                    <form class="expense-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Expense</label>
+                                <input type="text" class="form-input" placeholder="Expense name">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date</label>
+                                <input type="date" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <input type="text" class="form-input" placeholder="Description">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Category</label>
+                                <input type="text" class="form-input" placeholder="Category">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            Submit
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- IA Interpreter -->
+            <div class="ia-popup" id="popupOverlayIA">
+                <div class="ia-popup-container">
+                    <!-- FIXED: Changed ID to be unique -->
+                    <button id="closePopupIA" class="btn-close" aria-label="Close">
+                        <i class="bi bi-x-square-fill"></i>
+                    </button>
+                    <div class="pop-up-options">
+                        <a id="btn-option" name="openModalBtn" href="#" onclick="return false;">Manual</a>
+                        <a id="btn-option" href="#" name="scan-bill"  onclick="return false;">Escanear factura</a>
+                        <a id="btn-option-selected" name="go-ia" href="#" onclick="return false;">Clasificador IA</a>
+                    </div>
+                    <div class="amount-section-ia">
+                        <div class="amount-label-ia">Cantidad</div>
+                        <div class="amount-value-ia">
+                            <input type="number" class="amount-input-ia" placeholder="0.00" step="0.01">
+                        </div>
+                    </div>
+                    <form>
+                        <div class="form-group-ia">
+                            <label class="form-label-ia">What did you do?</label>
+                            <textarea class="form-textarea-ia" placeholder="Describe your expense..."></textarea>
+                        </div>
+                        <div class="form-row-ia">
+                            <div class="form-group-ia">
+                                <label class="form-label-ia">Date</label>
+                                <input type="date" class="form-input-ia">
+                            </div>
+                            <div class="form-group-ia">
+                                <label class="form-label-ia">Category</label>
+                                <input type="text" class="form-input-ia" placeholder="Category">
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn-ia">Submit</button>
+                    </form>
+                </div>
+            </div>
         </main>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" 
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
     <!-- <script src="{{ url_for('static', filename='js/app,js') }}"></script>   -->
