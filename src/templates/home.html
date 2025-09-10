@@ -101,17 +101,18 @@
         <h2 id="history-title">Last Expensive</h2>
         <div class="box-history">
             <div class="history-item">
-                <p class="history-item-name" id="history-element">Expense Name</p>
-                <p class="history-item-amount" id="history-element">$0.00</p>
-                <p class="history-item-date" id="history-element">2023-10-01</p>
-                <p class="history-item-category" id="history-element">Category</p>
-            </div>
-            <div class="history-item">
-                <p class="history-item-name" id="history-element">Expense Name</p>
-                <p class="history-item-amount" id="history-element">$0.00</p>
-                <p class="history-item-date" id="history-element">2023-10-01</p>
-                <p class="history-item-category" id="history-element">Category</p>
-            </div>
+                {% if expenses %}
+                    {% for expense in expenses %}
+                    <div class="history-expense">
+                        <p class="history-item-name" id="history-element">{{ expense.name }}</p>
+                        <p class="history-item-amount" id="history-element">{{ "%.2f"|format(expense.amount|float) }}</p>
+                        <p class="history-item-date" id="history-element">{{ expense.date }}</p>
+                        <p class="history-item-category" id="history-element">{{ expense.category }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No expenses</p>
+                {% endif %}
         </div>
     </div>
 </div>
