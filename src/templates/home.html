@@ -100,20 +100,32 @@
     <div class="history">
         <h2 id="history-title">Last Expensive</h2>
         <div class="box-history">
-            <div class="history-item">
-                {% if expenses %}
-                    {% for expense in expenses %}
-                    <div class="history-expense">
-                        <p class="history-item-name" id="history-element">{{ expense.name }}</p>
-                        <p class="history-item-amount" id="history-element">{{ "%.2f"|format(expense.amount|float) }}</p>
-                        <p class="history-item-date" id="history-element">{{ expense.date }}</p>
-                        <p class="history-item-category" id="history-element">{{ expense.category }}</p>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p>No expenses</p>
-                {% endif %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if value %}
+                        {% for expense in value %}
+                        <tr>
+                            <td  align="center">{{ expense.NAME }}</td>
+                            <td align="center">${{ expense.AMOUNT }}</td>
+                            <td align="center"> {{ expense.DATE }}</td>
+                            <td align="center">{{ expense.CATEGORY }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" id="history-element">No expenses</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
     </div>
-</div>
 {% endblock %}

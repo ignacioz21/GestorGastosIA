@@ -1,7 +1,7 @@
 from flask import Blueprint, request, flash, redirect, url_for, render_template
 from src.IA.utils.image_processing import extract_text, extract_text_pdf
 
-from src.database.helpeDB import get_expenses, add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR, atributes_extraction_OCR, add_expense
+from src.database.helpeDB import get_expenses, add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR, atributes_extraction_OCR, add_expense, getRecentExpense
 from datetime import datetime
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
@@ -40,8 +40,8 @@ def home():
                 print("Agregado con exito!")
 
         return redirect(url_for('main.home'))
-    expenses = get_expenses()
-    return render_template('home.html', expenses=expenses)
+    expenses = getRecentExpense()
+    return render_template('home.html', value=expenses)
 
 
 @bp.route('/PLM', methods=['GET', 'POST'])
