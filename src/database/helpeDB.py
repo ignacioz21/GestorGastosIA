@@ -188,3 +188,22 @@ def get_expenses_OCR():
                 connection.close()
                 print("MySQL connection closed")
     return []
+
+def getRecentExpense():
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT NAME, AMOUNT, DATE, CATEGORY FROM expenses ORDER BY DATE DESC LIMIT 5;
+            """)
+            expensesOrdder = cursor.fetchall()
+            return expensesOrdder
+        except Error as e:
+            print(f"Error obteniendo los gastos recientes: {e}")
+            return []
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print("Funcion cerrada")
