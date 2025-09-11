@@ -62,10 +62,12 @@ def PLM_expenses_loading(text, amount):
     }
 
 
-def add_expenses_PLM(text, amount):
+def add_expenses_PLM(text, amount, date):
     processessed_data = PLM_expenses_loading(text, amount)
     if processessed_data['amount'] is None:
         return False, "Amount is required"
+    elif date == " ":
+        date = processessed_data['now']
     connection = get_db_connection()
     if connection:
         try:
@@ -76,7 +78,7 @@ def add_expenses_PLM(text, amount):
             values = (
                 processessed_data['category'],
                 processessed_data['amount'],
-                processessed_data['now'],
+                date,
                 processessed_data['text']
             )
             cursor.execute(query, values)
@@ -186,3 +188,22 @@ def get_expenses_OCR():
                 connection.close()
                 print("MySQL connection closed")
     return []
+
+def getRecentExpense():
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT NAME, AMOUNT, DATE, CATEGORY FROM expenses ORDER BY DATE DESC LIMIT 5;
+            """)
+            expensesOrdder = cursor.fetchall()
+            return expensesOrdder
+        except Error as e:
+            print(f"Error obteniendo los gastos recientes: {e}")
+            return []
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print("Funcion cerrada")

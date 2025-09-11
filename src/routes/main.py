@@ -1,9 +1,7 @@
 from flask import Blueprint, request, flash, redirect, url_for, render_template
-from werkzeug.utils import secure_filename
-import os
 from src.IA.utils.image_processing import extract_text, extract_text_pdf
 
-from src.database.helpeDB import add_expense, get_expenses, add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR, atributes_extraction_OCR
+from src.database.helpeDB import get_expenses, add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR, atributes_extraction_OCR, add_expense, getRecentExpense
 from datetime import datetime
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
@@ -17,23 +15,33 @@ bp = Blueprint('main', __name__)
 @bp.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-        try:
-            name = request.form['expense-name']
-            amount = float(request.form['expense-value'])
-            date = datetime.strptime(request.form['expense-date'], '%Y-%m-%d').date()
-            category = request.form['expense-category']
-            if add_expense(name, amount, date, category):
-                print('Expense added successfully.')
-            else:
-                print('Failed to add expense.')
-        except ValueError as e:
-            print(f'ValueError: {str(e)}')
-        except Exception as e:
-            print(f'An unexpected error occurred: {str(e)}')
+        value = request.form.get('form_type')
+        boxValues = request.form
+        print(value)
+        if value == "ia":
+            amount = boxValues.get('ia-amount')
+            description = boxValues.get('ia-description')
+            date = boxValues.get('ia-date')
             
+            check, message = add_expenses_PLM(text=description, amount=amount, date=date)
+
+            if check:
+                print(message)
+    
+        elif value == "manual":
+            name = boxValues.get('expense-name')
+            amount = boxValues.get('expense-value')
+            date = boxValues.get('expense-date')
+            category = boxValues.get('expense-category')
+
+            check = add_expense(name=name, amount=amount, date=date, category=category)
+
+            if check:
+                print("Agregado con exito!")
+
         return redirect(url_for('main.home'))
-    expenses = get_expenses()
-    return render_template('home.html', expenses=expenses)
+    expenses = getRecentExpense()
+    return render_template('home.html', value=expenses)
 
 
 @bp.route('/PLM', methods=['GET', 'POST'])
