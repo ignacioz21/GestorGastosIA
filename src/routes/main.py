@@ -1,7 +1,7 @@
-from flask import Blueprint, request, flash, redirect, url_for, render_template
+from flask import Blueprint, request, flash, redirect, url_for, render_template, jsonify
 from src.IA.utils.image_processing import extract_text, extract_text_pdf
 
-from src.database.helpeDB import get_expenses, add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR, atributes_extraction_OCR, add_expense, getRecentExpense
+from src.database.helpeDB import get_expenses, add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR, atributes_extraction_OCR, add_expense, getRecentExpense, getExpenseCategory
 from datetime import datetime
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
@@ -40,8 +40,71 @@ def home():
                 print("Agregado con exito!")
 
         return redirect(url_for('main.home'))
+    
+    category, amount = getExpenseCategory()
     expenses = getRecentExpense()
-    return render_template('home.html', value=expenses)
+
+    chart_data = None
+    try:
+        if isinstance(category, list) and isinstance(amount, list):
+            gastos_combinados = list(zip(category, amount))
+            gastos_ordenados = sorted(gastos_combinados, key=lambda x: x[1], reverse=True)
+            
+            chart_data = {
+                'categorias': [item[0] for item in gastos_ordenados],
+                'montos': [float(item[1]) for item in gastos_ordenados]
+            }
+    except:
+        chart_data = None
+
+    return render_template('home.html', value=expenses, chart_data=chart_data)
+
+@bp.route('/api/gastos-categoria', methods=['GET'])
+def obtenerExpenseCategory():
+    try:
+        category, amount = getExpenseCategory()
+
+        # Validar correctamente los tipos
+        if isinstance(category, list) and isinstance(amount, list):
+            # Combinar y ordenar por monto (índice 1)
+            unOrderAmount = list(zip(category, amount))
+            orderAmount = sorted(unOrderAmount, key=lambda x: x[1], reverse=True)
+
+            categories = [item[0] for item in orderAmount]
+            amounts = [float(item[1]) for item in orderAmount]
+        else:
+            categories = []
+            amounts = []
+
+        total = sum(amounts) if amounts else 0.0
+
+        return jsonify({
+            'success': True,
+            'categorias': categories,
+            'montos': amounts,
+            'total_gastos': total
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+            
+@bp.route('/debug-expense-data')
+def debug_expense_data():
+    try:
+        category, amount = getExpenseCategory()
+        return {
+            'category_type': str(type(category)),
+            'category_value': category,
+            'amount_type': str(type(amount)),
+            'amount_value': amount,
+            'category_length': len(category) if hasattr(category, '__len__') else 'N/A',
+            'amount_length': len(amount) if hasattr(amount, '__len__') else 'N/A'
+        }
+    except Exception as e:
+        return {'error': str(e)}
 
 
 @bp.route('/PLM', methods=['GET', 'POST'])

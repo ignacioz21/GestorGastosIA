@@ -2,48 +2,9 @@
 
 {% block title %}Home{% endblock %}
 {% block CSS %}
-<link rel="stylesheet", href="{{ url_for('static', filename='css/home.css') }}")>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 {% endblock %}
 {% block content %}
-<!--
-<h2>Add expense</h2>
-<form method="POST" action="{{ url_for('main.home') }}">
-    <input type="text" placeholder="Gasto" id="expense-name" name="expense-name" required>
-    <input type="number" placeholder="Valor" id="expense-value" name="expense-value" required>
-    <input type="date" id="expense-date" name="expense-date" required>
-    <input type="text" placeholder="Categoria" id="expense-category" name="expense-category" required>
-    <button type="submit" id="add-expense">Adicionar Gasto</button>
-</form>
-<div class="expenses-container">
-    <h2>Spendings</h2>
-    {% if expenses %}
-        <div class="table-responsive">
-            <table class="table-stripped">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>category</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for expense in expenses %}
-                        <tr>
-                            <td>{{ expense.name }}</td>
-                            <td>${{ "%.2f"|format(expense.amount|float) }}</td>
-                            <td>{{ expense.date }}</td>
-                            <td>{{ expense.category }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-            <p class="text-muted">No hay gastos registrados</p>
-    {% endif %}
-</div>
--->
 <div class="home-section">
     <div class="boxes">
         <h2 id="tile-box">
@@ -80,24 +41,16 @@
     </div>
 </div>
 <div class="details">
-    <div class="categories">
-        <h2 id="categories-title">Categories</h2>
-        <div class="box-categories">
-            <div class="category-item">
-                <i class="bi bi-droplet-fill" id="icon-1"></i>
-                <div id="icon-bar-1"></div>
-            </div>
-            <div class="category-item">
-                <i class="bi bi-nintendo-switch" id="icon-2"></i>
-                <div id="icon-bar-2"></div>
-            </div>
-            <div class="category-item">
-                <i class="bi bi-star-fill" id="icon-3"></i>
-                <div id="icon-bar-3"></div>
-            </div>
+    <div class="dashboard-section" style="margin: 30px 0;">
+        <h2> Análisis de Gastos por Categoría</h2>
+        <div class="chart-container-wrapper">
+            <canvas id="expenseChart" height="300"></canvas>
+            <div id="statsContainer" style="margin-top:12px;"></div>
+            <div id="chartLoading" style="display:none; margin-top:8px;"></div>
         </div>
     </div>
-    <div class="history">
+</div>
+<div class="history">
         <h2 id="history-title">Last Expensive</h2>
         <div class="box-history">
             <table>

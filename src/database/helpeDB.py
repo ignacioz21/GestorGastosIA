@@ -2,6 +2,7 @@ from . import get_db_connection
 from datetime import datetime
 from mysql.connector import Error
 from src.IA.utils.tools import extrac_category, extract_bills_atributes, change_date_format
+from flask import jsonify
  
 def add_expense(name, amount, date, category):
     now = datetime.now();
@@ -207,3 +208,34 @@ def getRecentExpense():
                 cursor.close()
                 connection.close()
                 print("Funcion cerrada")
+
+def getExpenseCategory():
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = """
+                SELECT CATEGORY, SUM(AMOUNT) as AMOUNT FROM expenses 
+                GROUP BY CATEGORY ORDER BY AMOUNT DESC
+            """
+            cursor.execute(query)
+            result = cursor.fetchall()
+            
+            categorias = []
+            monto = []
+
+            for category, amount in result:
+                categorias.append(category)
+                monto.append(float(amount))
+
+            return categorias, monto
+            
+        except Exception as e:
+            print(f"Error obteniendo los gastos recientes: {e}")
+            return [], []
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print("Conexion categoria cerrada")
+
