@@ -1,7 +1,7 @@
 from flask import Blueprint, request, flash, redirect, url_for, render_template, jsonify
 from src.IA.utils.image_processing import extract_text, extract_text_pdf
-
-from src.database.helpeDB import get_expenses, add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR, atributes_extraction_OCR, add_expense, getRecentExpense, getExpenseCategory
+from src.utils.tools import getHomeValues
+from src.database.helpeDB import add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR, atributes_extraction_OCR, add_expense, getRecentExpense, getExpenseCategory
 from datetime import datetime
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
@@ -14,6 +14,8 @@ bp = Blueprint('main', __name__)
 
 @bp.route('/', methods=['GET', 'POST'])
 def home():
+    valuesHome = getHomeValues()
+
     if request.method == 'POST':
         value = request.form.get('form_type')
         boxValues = request.form
@@ -40,9 +42,11 @@ def home():
                 print("Agregado con exito!")
 
         return redirect(url_for('main.home'))
-    
-    category, amount = getExpenseCategory()
-    expenses = getRecentExpense()
+
+    expenses = valuesHome[0]
+    transaction = valuesHome[1]
+    category = valuesHome[2]
+    amount = valuesHome[3]
 
     chart_data = None
     try:
@@ -57,7 +61,7 @@ def home():
     except:
         chart_data = None
 
-    return render_template('home.html', value=expenses, chart_data=chart_data)
+    return render_template('home.html', value=expenses, chart_data=chart_data, transaction=transaction)
 
 @bp.route('/api/gastos-categoria', methods=['GET'])
 def obtenerExpenseCategory():

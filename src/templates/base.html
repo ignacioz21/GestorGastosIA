@@ -44,8 +44,6 @@
         <main class="content">
             {% block content %}
             {% endblock %}
-            <!-- Manual expense pop up -->
-            <!-- FIXED: Changed name to id and fixed structure -->
             <form action="/" method="POST">  
                 <div id="popupOverlay" class="add-expense-popup">
                     <div class="popup-content">
@@ -70,6 +68,13 @@
                             </div>
                             <div class="third-section">
                                 <input type="text" placeholder="Categoria" name="expense-category" required>
+                            </div>
+                            <div class="fourth-section">
+                                <select name="transaction" id="">
+                                    {% for t in transaction %}
+                                        <option value="{{ t }}">{{ t }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <button type="submit" name="btn_manual">Adicionar Gasto</button>
                         </form>
