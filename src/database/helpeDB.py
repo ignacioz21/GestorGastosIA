@@ -4,19 +4,12 @@ from mysql.connector import Error
 from src.IA.utils.tools import extrac_category, extract_bills_atributes, change_date_format
 from flask import jsonify
  
-def add_expense(name, amount, date, category):
-    now = datetime.now();
+def add_expense(category, type, movement, name, amount, date):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor()
-            query = """
-                INSERT INTO expenses (NAME, AMOUNT, DATE, CATEGORY, CREATED_AT)
-                VALUES (%s, %s, %s, %s, %s)
-            """
-            cursor.execute(query, (name, amount, date, category, now))
-            connection.commit()
-            print("Expense added successfully.")
+            cursor.callproc("addExpense", [category, type, movement, name, amount, date])
             return True
         except Error as e:
             print(f"Error while adding expense: {e}")
