@@ -10,6 +10,8 @@ def add_expense(category, type, movement, name, amount, date):
         try:
             cursor = connection.cursor()
             cursor.callproc("addExpense", [category, type, movement, name, amount, date])
+            cursor.close()
+            connection.close()
             return True
         except Error as e:
             print(f"Error while adding expense: {e}")
@@ -25,14 +27,10 @@ def get_expenses():
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
-            cursor.execute("""
-                SELECT id, name, amount, 
-                       DATE_FORMAT(date, '%Y-%m-%d') as date, 
-                       category, created_at 
-                FROM expenses 
-                ORDER BY date DESC
-            """)
+            cursor.callproc("getExpenses")
             expenses = cursor.fetchall()
+            cursor.close()
+            connection.close()
             return expenses
         except Error as e:
             print(f"Error fetching expenses: {e}")
@@ -43,6 +41,36 @@ def get_expenses():
                 connection.close()
                 print("MySQL connection closed")
     return []
+
+def getEnums(columName):
+    connection = get_db_connection()
+    enums = []
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.callproc("getEnums", [columName])
+
+            for result in cursor.stored_results():
+                values = result.fetchall()
+                dirtyEnums = [column[list(column.keys())[0]] for column in values]
+            dirtyEnums = dirtyEnums[0]
+            cleanEnums = dirtyEnums.replace("enum(","").replace(")", "")
+
+            enums = cleanEnums.split(",")
+
+            enums = [e.strip().strip("'") for e in enums]
+            
+            print(enums)
+            return enums
+        except Error as e:
+            print(f"Error en la funcion getEnums(): \n{e}")
+            return []
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print("MySQL connection closed")
+
 
 def PLM_expenses_loading(text, amount):
     category = extrac_category(text)
