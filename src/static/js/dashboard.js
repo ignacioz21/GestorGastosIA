@@ -60,7 +60,7 @@ async function cargarGraficos() {
         }
         
         const datos = await response.json();
-        console.log('📊 Datos recibidos:', datos);
+        console.log('Datos recibidos:', datos);
         
         if (datos.success) {
             // Normalizar nombres de propiedades
@@ -75,7 +75,7 @@ async function cargarGraficos() {
             
             if (datosNormalizados.categorias && datosNormalizados.categorias.length > 0) {
                 crearGraficaBarras(datosNormalizados);
-                mostrarEstadisticas(datosNormalizados);
+                //mostrarEstadisticas(datosNormalizados);
                 console.log('✅ Gráfica y estadísticas actualizadas correctamente');
             } else {
                 console.warn('⚠️ No hay datos disponibles');
@@ -288,7 +288,7 @@ function mostrarEstadisticas(datos) {
     `;
     
     // Actualizar el contenido
-    container.innerHTML = statsHtml;
+    //container.innerHTML = statsHtml;
     
     // Agregar una pequeña animación de entrada
     container.style.opacity = '0';
@@ -312,10 +312,10 @@ function mostrarCargando(mostrar) {
     }
     
     // También manejar el loading de estadísticas si existe
-    const statsContainer = document.getElementById('statsContainer');
-    if (statsContainer && mostrar) {
-        statsContainer.innerHTML = '<div class="stats-loading">Cargando estadísticas</div>';
-    }
+    // const statsContainer = document.getElementById('statsContainer');
+    // if (statsContainer && mostrar) {
+    //     statsContainer.innerHTML = '<div class="stats-loading">Cargando estadísticas</div>';
+    // }
 }
 
 /**

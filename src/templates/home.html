@@ -41,44 +41,47 @@
     </div>
 </div>
 <div class="details">
-    <div class="dashboard-section" style="margin: 30px 0;">
+    <div class="tites">
         <h2> Análisis de Gastos por Categoría</h2>
+        <h2 id="history-title">Last Expensive</h2>
+    </div>
+   
+
+    <div class="dashboard-section">
         <div class="chart-container-wrapper">
-            <canvas id="expenseChart" height="300"></canvas>
-            <div id="statsContainer" style="margin-top:12px;"></div>
-            <div id="chartLoading" style="display:none; margin-top:8px;"></div>
+            <canvas id="expenseChart"></canvas>
+        </div>
+        <div class="history">
+            <div class="box-history">
+                {% if value %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                {% for expense in value %}
+                                <tr>
+                                    <td align="center">{{ expense.NAME }}</td>
+                                    <td align="center"> {{ "%.2f"|format(expense.AMOUNT|float) }} $</td>
+                                    <td align="center"> {{ expense.DATE }}</td>
+                                    <td align="center">{{ expense.CATEGORY }}</td>
+                                </tr>
+                                {% endfor %}
+                {% else %}
+                            <tr>
+                                <td colspan="4" id="history-element">No expenses</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-<div class="history">
-        <h2 id="history-title">Last Expensive</h2>
-        <div class="box-history">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>Category</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if value %}
-                        {% for expense in value %}
-                        <tr>
-                            <td align="center">{{ expense.NAME }}</td>
-                            <td align="center"> {{ "%.2f"|format(expense.AMOUNT|float) }} $</td>
-                            <td align="center"> {{ expense.DATE }}</td>
-                            <td align="center">{{ expense.CATEGORY }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="4" id="history-element">No expenses</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+
 {% endblock %}
