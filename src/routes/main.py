@@ -35,8 +35,9 @@ def home():
             amount = boxValues.get('expense-value')
             date = boxValues.get('expense-date')
             category = boxValues.get('expense-category')
+            transaction = boxValues.get('transaction')
 
-            check = add_expense(name=name, amount=amount, date=date, category=category)
+            check = add_expense(name=name, amount=amount, date=date, category=category, movement=transaction, type='manual' )
 
             if check:
                 print("Agregado con exito!")
@@ -47,6 +48,7 @@ def home():
     transaction = valuesHome[1]
     category = valuesHome[2]
     amount = valuesHome[3]
+    categories = valuesHome[4]
 
     chart_data = None
     try:
@@ -61,7 +63,7 @@ def home():
     except:
         chart_data = None
 
-    return render_template('home.html', value=expenses, chart_data=chart_data, transaction=transaction)
+    return render_template('home.html', value=expenses, chart_data=chart_data, transaction=transaction, categories=categories)
 
 @bp.route('/api/gastos-categoria', methods=['GET'])
 def obtenerExpenseCategory():

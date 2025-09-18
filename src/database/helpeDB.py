@@ -53,14 +53,13 @@ def getEnums(columName):
             for result in cursor.stored_results():
                 values = result.fetchall()
                 dirtyEnums = [column[list(column.keys())[0]] for column in values]
+            
             dirtyEnums = dirtyEnums[0]
             cleanEnums = dirtyEnums.replace("enum(","").replace(")", "")
 
             enums = cleanEnums.split(",")
-
             enums = [e.strip().strip("'") for e in enums]
-            
-            print(enums)
+
             return enums
         except Error as e:
             print(f"Error en la funcion getEnums(): \n{e}")
@@ -70,6 +69,26 @@ def getEnums(columName):
                 cursor.close()
                 connection.close()
                 print("MySQL connection closed")
+
+
+def getCategories():
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.callproc("GetCategoryNames")
+            for result in cursor.stored_results():
+                categories = result.fetchall()
+            print(categories)
+            return categories
+        except Error as e:
+            print(f"Error en la funcion 'getCategories' => {e}")
+            return []
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                print("MySQL connection closed")
+
 
 
 def PLM_expenses_loading(text, amount):
@@ -237,7 +256,7 @@ def getExpenseCategory():
             cursor = connection.cursor()
             query = """
                 SELECT CATEGORY, SUM(AMOUNT) as AMOUNT FROM expenses 
-                GROUP BY CATEGORY ORDER BY AMOUNT DESC
+                GROUP BY CATEGORY ORDER BY AMOUNT DESC LIMIT 5
             """
             cursor.execute(query)
             result = cursor.fetchall()

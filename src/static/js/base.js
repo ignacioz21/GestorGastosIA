@@ -119,4 +119,25 @@ document.addEventListener('DOMContentLoaded', function() {
         closeAll: closeAllModals,
         isOpen: isModalOpen
     };
+
+    const select = document.getElementById('expense-category-select');
+    const inputNew = document.getElementById('newCategoryInput');
+
+    if (!select || !inputNew) return;
+
+    function toggleNewCategory() {
+        if (select.value === 'new-category') {
+            inputNew.style.display = 'block';
+            inputNew.focus();
+        } else {
+            inputNew.style.display = 'none';
+            inputNew.value = '';
+        }
+    }
+
+    // inicial
+    toggleNewCategory();
+
+    // al cambiar selección
+    select.addEventListener('change', toggleNewCategory);
 });
