@@ -67,7 +67,15 @@
                                 <input type="date" name="expense-date" required>
                             </div>
                             <div class="third-section">
-                                <input type="text" placeholder="Categoria" name="expense-category" required>
+                                <select name="expense-category" id="expense-category-select" class="expense-category">
+                                    {%  for c in categories  %}
+                                        <option value="{{ c.id }}">{{ c.NAME }}</option>
+                                    {% endfor %}
+                                        <option value="new-category">Add Category</option>
+                                </select>
+                                <!-- input para nueva categoría (fuera del select) -->
+                                <input type="text" id="newCategoryInput" name="expense-category-new"
+                                    placeholder="Nombre nueva categoría" style="display:none; margin-top:8px; width:100%;">
                             </div>
                             <div class="fourth-section">
                                 <select name="transaction" id="">
