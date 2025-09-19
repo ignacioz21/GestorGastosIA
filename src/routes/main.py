@@ -1,7 +1,7 @@
 from flask import Blueprint, request, flash, redirect, url_for, render_template, jsonify
 from src.IA.utils.image_processing import extract_text, extract_text_pdf
 from src.utils.tools import getHomeValues
-from src.database.helpeDB import add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR, atributes_extraction_OCR, add_expense, getRecentExpense, getExpenseCategory
+from src.database.helpeDB import add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR, atributes_extraction_OCR, add_expense, getExpenseCategory, addCategory
 from datetime import datetime
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
@@ -15,6 +15,12 @@ bp = Blueprint('main', __name__)
 @bp.route('/', methods=['GET', 'POST'])
 def home():
     valuesHome = getHomeValues()
+
+    expenses = valuesHome[0]
+    transaction = valuesHome[1]
+    category = valuesHome[2]
+    amount = valuesHome[3]
+    categories = valuesHome[4]
 
     if request.method == 'POST':
         value = request.form.get('form_type')
@@ -37,18 +43,23 @@ def home():
             category = boxValues.get('expense-category')
             transaction = boxValues.get('transaction')
 
-            check = add_expense(name=name, amount=amount, date=date, category=category, movement=transaction, type='manual' )
+            for i in categories:
+                print(i)
+                if i['NAME'] == categories:
+                    check = add_expense(name=name, amount=amount, date=date, category=category, movement=transaction, type='manual' )
+                else:
+                    newCategory = boxValues.get('expense-category-new')
+                    categoryId = addCategory(newCategory)
+                    print(categoryId)
+                    if categoryId != None:
+                        print(f'Categoria: {newCategory} agregada con exito')
+                        check = add_expense(name=name, amount=amount, date=date, category=categoryId, movement=transaction, type='manual' )
 
             if check:
                 print("Agregado con exito!")
 
         return redirect(url_for('main.home'))
 
-    expenses = valuesHome[0]
-    transaction = valuesHome[1]
-    category = valuesHome[2]
-    amount = valuesHome[3]
-    categories = valuesHome[4]
 
     chart_data = None
     try:

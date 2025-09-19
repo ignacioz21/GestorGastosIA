@@ -10,8 +10,6 @@ def add_expense(category, type, movement, name, amount, date):
         try:
             cursor = connection.cursor()
             cursor.callproc("addExpense", [category, type, movement, name, amount, date])
-            cursor.close()
-            connection.close()
             return True
         except Error as e:
             print(f"Error while adding expense: {e}")
@@ -71,6 +69,25 @@ def getEnums(columName):
                 print("MySQL connection closed")
 
 
+def addCategory(name):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.callproc("addCategory", [name])
+            for result in cursor.stored_results():
+                idCategory = result.fetchall()
+            print(f"a: {name}")
+            return idCategory
+        except Error as e:
+            print(f"Error en la funcion 'addCategory' => {e}")
+            return None
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print("MySQL disconnected")
+
 def getCategories():
     connection = get_db_connection()
     if connection:
@@ -87,6 +104,7 @@ def getCategories():
         finally:
             if connection.is_connected():
                 cursor.close()
+                connection.close()
                 print("MySQL connection closed")
 
 
