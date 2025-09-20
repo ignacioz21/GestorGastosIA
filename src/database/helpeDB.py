@@ -75,16 +75,24 @@ def addCategory(name):
         try:
             cursor = connection.cursor()
             cursor.callproc("addCategory", [name])
+
             for result in cursor.stored_results():
-                idCategory = result.fetchall()
-            print(f"a: {name}")
+                row = result.fetchone()
+                if row:
+                    idCategory = row[0]
+
+            print(f"Categoria agregada: {name} con ID {idCategory}")
+            connection.commit()
             return idCategory
+
         except Error as e:
             print(f"Error en la funcion 'addCategory' => {e}")
             return None
+
         finally:
-            if connection.is_connected():
+            if cursor:
                 cursor.close()
+            if connection.is_connected():
                 connection.close()
                 print("MySQL disconnected")
 

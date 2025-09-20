@@ -14,13 +14,6 @@ bp = Blueprint('main', __name__)
 
 @bp.route('/', methods=['GET', 'POST'])
 def home():
-    valuesHome = getHomeValues()
-
-    expenses = valuesHome[0]
-    transaction = valuesHome[1]
-    category = valuesHome[2]
-    amount = valuesHome[3]
-    categories = valuesHome[4]
 
     if request.method == 'POST':
         value = request.form.get('form_type')
@@ -40,20 +33,22 @@ def home():
             name = boxValues.get('expense-name')
             amount = boxValues.get('expense-value')
             date = boxValues.get('expense-date')
-            category = boxValues.get('expense-category')
+            selected_category = boxValues.get('expense-category')
             transaction = boxValues.get('transaction')
 
-            for i in categories:
-                print(i)
-                if i['NAME'] == categories:
-                    check = add_expense(name=name, amount=amount, date=date, category=category, movement=transaction, type='manual' )
-                else:
-                    newCategory = boxValues.get('expense-category-new')
+            categoryId = None
+            
+            for cat in categories:
+                if cat['NAME'] == selected_category:
+                    categoryId = cat['ID']
+                    break
+
+            if categoryId is None:
+                newCategory = boxValues.get('expense-category-new')
+                if newCategory:
                     categoryId = addCategory(newCategory)
-                    print(categoryId)
-                    if categoryId != None:
+                    if categoryId:
                         print(f'Categoria: {newCategory} agregada con exito')
-                        check = add_expense(name=name, amount=amount, date=date, category=categoryId, movement=transaction, type='manual' )
 
             if check:
                 print("Agregado con exito!")
@@ -73,6 +68,13 @@ def home():
             }
     except:
         chart_data = None
+    
+    valuesHome = getHomeValues()
+    expenses = valuesHome[0]
+    transaction = valuesHome[1]
+    category = valuesHome[2]
+    amount = valuesHome[3]
+    categories = valuesHome[4]
 
     return render_template('home.html', value=expenses, chart_data=chart_data, transaction=transaction, categories=categories)
 
