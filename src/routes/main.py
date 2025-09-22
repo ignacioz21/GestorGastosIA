@@ -1,7 +1,7 @@
 from flask import Blueprint, request, flash, redirect, url_for, render_template, jsonify
 from src.IA.utils.image_processing import extract_text, extract_text_pdf
 from src.utils.tools import getHomeValues
-from src.database.helpeDB import add_expenses_PLM, get_expenses_PLM, add_expenses_OCR, get_expenses_OCR, atributes_extraction_OCR, add_expense, getExpenseCategory, addCategory
+from src.database.helpeDB import *
 from datetime import datetime
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
@@ -37,7 +37,7 @@ def home():
             transaction = boxValues.get('transaction')
 
             categoryId = None
-            
+            categories = getCategories()
             for cat in categories:
                 if cat['NAME'] == selected_category:
                     categoryId = cat['ID']
@@ -50,8 +50,6 @@ def home():
                     if categoryId:
                         print(f'Categoria: {newCategory} agregada con exito')
 
-            if check:
-                print("Agregado con exito!")
 
         return redirect(url_for('main.home'))
 
