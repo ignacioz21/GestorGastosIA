@@ -10,6 +10,7 @@ def add_expense(category, type, movement, name, amount, date):
         try:
             cursor = connection.cursor()
             cursor.callproc("addExpense", [category, type, movement, name, amount, date])
+            connection.commit()
             return True
         except Error as e:
             print(f"Error while adding expense: {e}")
@@ -108,6 +109,26 @@ def getCategories():
             return categories
         except Error as e:
             print(f"Error en la funcion 'getCategories' => {e}")
+            return []
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print("MySQL connection closed")
+
+
+def get5RecentExpenses():
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.callproc("get5Expenses")
+            for result in cursor.stored_results():
+                expenses = result.fetchall()
+            print(expenses)
+            return expenses
+        except Error as e:
+            print(f"Error en la funcion 'get5RecentExpenses' => {e}")
             return []
         finally:
             if connection.is_connected():
