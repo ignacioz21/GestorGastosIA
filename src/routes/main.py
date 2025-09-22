@@ -20,14 +20,7 @@ def home():
         boxValues = request.form
         print(value)
         if value == "ia":
-            amount = boxValues.get('ia-amount')
-            description = boxValues.get('ia-description')
-            date = boxValues.get('ia-date')
-            
-            check, message = add_expenses_PLM(text=description, amount=amount, date=date)
-
-            if check:
-                print(message)
+            print("Seleccionaste IA")
     
         elif value == "manual":
             name = boxValues.get('expense-name')
@@ -91,11 +84,11 @@ def home():
 @bp.route('/api/gastos-categoria', methods=['GET'])
 def obtenerExpenseCategory():
     try:
-        category, amount = getExpenseCategory()
+        category, amount = getTopCategories()
 
-        # Validar correctamente los tipos
+    
         if isinstance(category, list) and isinstance(amount, list):
-            # Combinar y ordenar por monto (índice 1)
+
             unOrderAmount = list(zip(category, amount))
             orderAmount = sorted(unOrderAmount, key=lambda x: x[1], reverse=True)
 
@@ -123,7 +116,7 @@ def obtenerExpenseCategory():
 @bp.route('/debug-expense-data')
 def debug_expense_data():
     try:
-        category, amount = getExpenseCategory()
+        category, amount = getTopCategories()
         return {
             'category_type': str(type(category)),
             'category_value': category,
@@ -134,81 +127,3 @@ def debug_expense_data():
         }
     except Exception as e:
         return {'error': str(e)}
-
-
-@bp.route('/PLM', methods=['GET', 'POST'])
-def plm():
-    if request.method == 'POST':
-        try:
-            # Get form data with validation
-            expense_value = request.form.get('expense_value')
-            if not expense_value:
-                raise ValueError("Expense value is required")
-                
-            amount = float(expense_value)
-            text = request.form.get('prompt_text', '')
-            
-            success, message = add_expenses_PLM(text, amount)
-            if success:
-                flash('PLM expenses processed successfully.', 'success')
-            else:
-                flash(f'Error processing PLM expenses: {message}', 'error')
-                
-        except ValueError as e:
-            flash(f'Invalid input: {str(e)}', 'error')
-        except Exception as e:
-            flash(f'Unexpected error: {str(e)}', 'error')
-            
-        return redirect(url_for('main.plm'))
-    
-    expenses = get_expenses_PLM()    
-    return render_template('prueba2.html', expenses=expenses)
-
-
-@bp.route('/OCR', methods=['GET', 'POST'])
-def ocr():
-    if request.method == 'POST':
-        action = request.form.get('action')
-        if action == "ticket_image":
-            if 'ticket_image' not in request.files:
-                print('No file uploaded', 'error')
-                return redirect(url_for('main.ocr'))
-            
-            file = request.files['ticket_image']
-            
-            if file.filename == '':
-                print('No file selected', 'error')
-                return redirect(url_for('main.ocr'))
-                
-            try:
-                file_ext = file.filename.rsplit('.', 1)[1].lower()
-                
-                # Process file directly without saving
-                if file_ext == 'pdf':
-                    text = extract_text_pdf(file)
-                else:
-                    text = extract_text(file)
-                    
-                if text:
-                    print('Text extracted successfully:')
-                    atributes = atributes_extraction_OCR(text)
-
-
-                else:
-                    print('No text could be extracted', 'warning')
-                    
-            except Exception as e:
-                print(f'Error processing file: {str(e)}', 'error')
-                
-
-            text = get_expenses_OCR()
-            return render_template('prueba3.html', expenses=atributes, text=text)
-        elif action == "save-db":
-            name = request.form['ocr-name']
-            amount = float(request.form.get('ocr-amount'))
-            date = datetime.strptime(request.form['ocr-date'], '%Y-%m-%d').date()
-            category = request.form['ocr-category']
-            add_expenses_OCR(category, amount, date, name)
-            
-    text = get_expenses_OCR()
-    return render_template('prueba3.html', expenses={}, text=text)  
