@@ -35,21 +35,33 @@ def home():
             date = boxValues.get('expense-date')
             selected_category = boxValues.get('expense-category')
             transaction = boxValues.get('transaction')
-
-            categoryId = None
+            print(selected_category)
+            categoryId = 0
             categories = getCategories()
-            for cat in categories:
-                if cat['NAME'] == selected_category:
-                    categoryId = cat['ID']
-                    break
+            
 
-            if categoryId is None:
+            if selected_category != "new-category":
+                check = add_expense(
+                    category=selected_category, 
+                    type='manual', 
+                    movement=transaction, 
+                    name=name, 
+                    amount=amount, 
+                    date=date
+                    )
+                print(f"Gasto '{name}' agregado en categoría ID {categoryId}")
+                print(check)
+            else:
                 newCategory = boxValues.get('expense-category-new')
-                if newCategory:
-                    categoryId = addCategory(newCategory)
-                    if categoryId:
-                        print(f'Categoria: {newCategory} agregada con exito')
-
+                id = addCategory(newCategory)
+                check = add_expense(
+                    category=id, 
+                    type='manual', 
+                    movement=transaction, 
+                    name=name, 
+                    amount=amount, 
+                    date=date
+                )
 
         return redirect(url_for('main.home'))
 

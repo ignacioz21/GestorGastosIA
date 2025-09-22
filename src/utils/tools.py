@@ -2,7 +2,7 @@ from src.database.helpeDB import *
 
 def getHomeValues():
     values = []
-    recentExpenses = getRecentExpense()
+    recentExpenses = get5RecentExpenses()
     typeTransaction = getEnums('MOVEMENT')
     category, amount = getExpenseCategory()
     categories = getCategories()

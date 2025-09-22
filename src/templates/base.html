@@ -69,7 +69,7 @@
                             <div class="third-section">
                                 <select name="expense-category" id="expense-category-select" class="expense-category">
                                     {%  for c in categories  %}
-                                        <option value="{{ c.id }}">{{ c.NAME }}</option>
+                                        <option value="{{ c.ID }}">{{ c.NAME }}</option>
                                     {% endfor %}
                                         <option value="new-category">Add Category</option>
                                 </select>

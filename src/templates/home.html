@@ -69,7 +69,7 @@
                                     <td align="center">{{ expense.NAME }}</td>
                                     <td align="center"> {{ "%.2f"|format(expense.AMOUNT|float) }} $</td>
                                     <td align="center"> {{ expense.DATE }}</td>
-                                    <td align="center">{{ expense.CATEGORY }}</td>
+                                    <td align="center">{{ expense.CATEGORY_NAME }}</td>
                                 </tr>
                                 {% endfor %}
                 {% else %}
