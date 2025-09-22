@@ -6,3 +6,5 @@ __pycache__/
 *.pyd
 __pycache__/
 *.pyc
+src/__pycache__
+src/database/__pycache__
