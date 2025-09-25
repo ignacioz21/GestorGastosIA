@@ -47,44 +47,128 @@
             <form action="/" method="POST">  
                 <div id="popupOverlay" class="add-expense-popup">
                     <div class="popup-content">
-                        <button id="closePopup" class="btn-close" aria-label="Close">
-                            <i class="bi bi-x-square-fill"></i>
-                        </button>
-                        <div class="pop-up-options">
-                            <a id="btn-option-selected" name="openModalBtn" href="#" onclick="return false;">Manual</a>
-                            <a id="btn-option" name="scan-bill" href="#" onclick="return false;">Escanear factura</a>
-                            <a id="btn-option" name="go-ia" href="#" onclick="return false;">Clasificador IA</a>
+                        <!-- Header mejorado -->
+                        <div class="popup-header">
+                            <h2 class="popup-title">
+                                <i class="bi bi-wallet2"></i>
+                                Nuevo Gasto
+                            </h2>
+                            <p class="popup-subtitle">Registra tu transacción de forma rápida y sencilla</p>
+                            <button id="closePopup" class="btn-close" type="button" aria-label="Close">
+                                <i class="bi bi-x"></i>
+                            </button>
                         </div>
-                        <h2>Add Expense</h2>
+
+                        <!-- Tab Navigation mejorado (manteniendo funcionalidad existente) -->
+                        <div class="pop-up-options">
+                            <a id="btn-option-selected" name="openModalBtn" href="#" onclick="return false;">
+                                <i class="bi bi-pencil-square"></i> Manual
+                            </a>
+                            <a id="btn-option" name="scan-bill" href="#" onclick="return false;">
+                                <i class="bi bi-camera"></i> Escanear
+                            </a>
+                            <a id="btn-option" name="go-ia" href="#" onclick="return false;">
+                                <i class="bi bi-robot"></i> IA
+                            </a>
+                        </div>
+
+                        <!-- Form mejorado manteniendo toda la funcionalidad existente -->
                         <form action="/" method="POST" class="popup-form">
                             <input type="hidden" name="form_type" value="manual">
                             
-                            <div class="first-section">
-                                <input type="text" placeholder="Gasto" name="expense-name" >
+                            <!-- Amount Section moderna -->
+                            <div class="amount-section-modern">
+                                <div class="amount-label-modern">
+                                    <i class="bi bi-cash-coin"></i>
+                                    Cantidad
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <input type="number" 
+                                           placeholder="0.00" 
+                                           name="expense-value" 
+                                           step="0.01" 
+                                           id="expense-box"
+                                           class="amount-input-modern"
+                                           required>
+                                    <span class="currency-modern">$</span>
+                                </div>
                             </div>
-                            <div class="second-section">
-                                <input type="number" placeholder="Valor" name="expense-value" step="0.01" >
-                                <input type="date" name="expense-date" >
+
+                            <!-- Panel mejorado -->
+                            <div class="panel">
+                                <div class="first-section">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">
+                                            <i class="bi bi-tag"></i>
+                                            Nombre del Gasto
+                                        </label>
+                                        <input type="text" 
+                                               placeholder="Ej: Almuerzo, Gasolina..." 
+                                               name="expense-name" 
+                                               id="expense-box"
+                                               required>
+                                    </div>
+                                    
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">
+                                            <i class="bi bi-arrow-up-down"></i>
+                                            Tipo de Transacción
+                                        </label>
+                                        <select class="selectpicker form-select" data-width="100%" name="transaction" required>
+                                            <option value="">Seleccionar...</option>
+                                            {% for t in transaction %}
+                                                {% if t == "Income" %}
+                                                    <option value="{{ t }}">💰 {{ t }}</option>
+                                                {% elif t == "Expense" %}
+                                                    <option value="{{ t }}">💸 {{ t }}</option>
+                                                {% else %}
+                                                    <option value="{{ t }}">🐷 {{ t }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="second-panel">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">
+                                            <i class="bi bi-grid-3x3-gap"></i>
+                                            Categoría
+                                        </label>
+                                        <select name="expense-category" 
+                                                id="expense-category-select" 
+                                                class="expense-category"
+                                                onchange="toggleNewCategory()"
+                                                required>
+                                            <option value="">Seleccionar categoría...</option>
+                                            {%  for c in categories  %}
+                                                <option value="{{ c['ID'] }}">{{ c['NAME'] }}</option>
+                                            {% endfor %}
+                                            <option value="new-category">➕ Añadir Nueva Categoría</option>
+                                        </select>
+                                        <input type="text" 
+                                               id="newCategoryInput" 
+                                               name="expense-category-new"
+                                               placeholder="Nombre de la nueva categoría">
+                                    </div>
+                                    
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">
+                                            <i class="bi bi-calendar3"></i>
+                                            Fecha
+                                        </label>
+                                        <input type="date" 
+                                               name="expense-date" 
+                                               class="expense-date"
+                                               required> 
+                                    </div>
+                                </div>       
                             </div>
-                            <div class="third-section">
-                                <select name="expense-category" id="expense-category-select" class="expense-category">
-                                    {%  for c in categories  %}
-                                        <option value="{{ c.ID }}">{{ c.NAME }}</option>
-                                    {% endfor %}
-                                        <option value="new-category">Add Category</option>
-                                </select>
-                                <!-- input para nueva categoría (fuera del select) -->
-                                <input type="text" id="newCategoryInput" name="expense-category-new"
-                                    placeholder="Nombre nueva categoría" style="display:none; margin-top:8px; width:100%;">
-                            </div>
-                            <div class="fourth-section">
-                                <select name="transaction" id="">
-                                    {% for t in transaction %}
-                                        <option value="{{ t }}">{{ t }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <button type="submit" name="btn_manual">Adicionar Gasto</button>
+                            
+                            <button type="submit" name="btn_manual">
+                                <i class="bi bi-check-circle"></i>
+                                Registrar Gasto
+                            </button>
                         </form>
                     </div>
                 </div>
