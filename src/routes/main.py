@@ -75,9 +75,9 @@ def home():
     valuesHome = getHomeValues()
     expenses = valuesHome[0]
     transaction = valuesHome[1]
-    category = valuesHome[2]
+    category = valuesHome[4]
     amount = valuesHome[3]
-    categories = valuesHome[4]
+    categories = valuesHome[2]
 
     return render_template('home.html', value=expenses, chart_data=chart_data, transaction=transaction, categories=categories)
 

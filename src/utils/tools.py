@@ -1,4 +1,4 @@
-from src.database.helpeDB import *
+from src.database.helpeDB import get5RecentExpenses, getEnums, getTopCategories, getCategories
 from src.IA.utils.tools import extrac_category
 
 def getHomeValues():

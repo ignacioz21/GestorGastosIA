@@ -141,3 +141,45 @@ document.addEventListener('DOMContentLoaded', function() {
     // al cambiar selección
     select.addEventListener('change', toggleNewCategory);
 });
+
+
+const menuItems = document.querySelectorAll('.menu-item');
+
+menuItems.forEach(item => {
+    item.addEventListener('click', function(e) {
+        // Remover la clase active de todos los elementos
+        menuItems.forEach(mi => {
+            mi.classList.remove('active', 'ripple');
+        });
+
+        // Agregar la clase active al elemento clickeado
+        this.classList.add('active');
+        
+        // Efecto de onda
+        this.classList.add('ripple');
+        setTimeout(() => {
+            this.classList.remove('ripple');
+        }, 300);
+
+        // Log para mostrar qué opción se seleccionó
+        console.log(`Opción seleccionada: ${this.dataset.option}`);
+    });
+
+    // Efecto hover mejorado
+    item.addEventListener('mouseenter', function() {
+        if (!this.classList.contains('active')) {
+            this.style.background = 'rgba(0, 0, 0, 0.05)';
+        }
+    });
+
+    item.addEventListener('mouseleave', function() {
+        if (!this.classList.contains('active')) {
+            this.style.background = 'transparent';
+        }
+    });
+});
+
+// Seleccionar la primera opción por defecto
+if (menuItems.length > 0) {
+    menuItems[0].classList.add('active');
+}
