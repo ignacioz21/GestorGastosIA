@@ -12,7 +12,7 @@
         </h2>
         <div class="box">
             <p id="value">
-                0.00$
+                {{ value.totalExpenses.total }}$
             </p>
             <i class="bi bi-trending-down" id="coin-1"></i>
         </div>
@@ -23,18 +23,18 @@
         </h2>
         <div class="box">
             <p id="value">
-                0.00$
+                {{ value.totalIncome.total }}$
             </p>
             <i class="bi bi-trending-up" id="coin-2"></i>
         </div>
     </div>
     <div class="boxes">
         <h2 id="tile-box">
-            % Savings
+            Savings
         </h2>
         <div class="box">
             <p id="value">
-                0.00%
+                {{ value.totalSavings.total }}$
             </p>
             <i class="bi bi-piggy-bank-fill"></i>
         </div>
@@ -57,7 +57,7 @@
         <!-- Historia de gastos -->
         <div class="history">
             <div class="box-history">
-                {% if value %}
+                {% if value.recentExpenses %}
                     <table>
                         <thead>
                             <tr>
@@ -68,7 +68,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for expense in value %}
+                            {% for expense in value.recentExpenses %}
                             <tr tabindex="0">
                                 <td align="center">{{ expense.NAME }}</td>
                                 <td align="center">${{ "%.2f"|format(expense.AMOUNT|float) }}</td>

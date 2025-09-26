@@ -116,7 +116,7 @@
                                         </label>
                                         <select class="selectpicker form-select" data-width="100%" name="transaction" required>
                                             <option value="">Seleccionar...</option>
-                                            {% for t in transaction %}
+                                            {% for t in value.enumsType %}
                                                 {% if t == "Income" %}
                                                     <option value="{{ t }}">💰 {{ t }}</option>
                                                 {% elif t == "Expense" %}
@@ -141,7 +141,7 @@
                                                 onchange="toggleNewCategory()"
                                                 required>
                                             <option value="">Seleccionar categoría...</option>
-                                            {%  for c in categories  %}
+                                            {%  for c in value.categories  %}
                                                 <option value="{{ c['ID'] }}">{{ c['NAME'] }}</option>
                                             {% endfor %}
                                             <option value="new-category">➕ Añadir Nueva Categoría</option>
