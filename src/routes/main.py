@@ -30,7 +30,6 @@ def home():
             transaction = boxValues.get('transaction')
             print(selected_category)
             categoryId = 0
-            categories = getCategories()
             
 
             if selected_category != "new-category":
@@ -59,10 +58,12 @@ def home():
         return redirect(url_for('main.home'))
 
 
+    valuesHome = getHomeValues()
+    print(valuesHome)
     chart_data = None
     try:
-        if isinstance(category, list) and isinstance(amount, list):
-            gastos_combinados = list(zip(category, amount))
+        if isinstance(valuesHome.mostCategories, list) and isinstance(valuesHome.mostCategories, list):
+            gastos_combinados = list(zip(valuesHome.mostCategories, amount))
             gastos_ordenados = sorted(gastos_combinados, key=lambda x: x[1], reverse=True)
             
             chart_data = {
@@ -72,14 +73,8 @@ def home():
     except:
         chart_data = None
     
-    valuesHome = getHomeValues()
-    expenses = valuesHome[0]
-    transaction = valuesHome[1]
-    category = valuesHome[4]
-    amount = valuesHome[3]
-    categories = valuesHome[2]
 
-    return render_template('home.html', value=expenses, chart_data=chart_data, transaction=transaction, categories=categories)
+    return render_template('home.html', value=valuesHome, chart_data=chart_data)
 
 @bp.route('/api/gastos-categoria', methods=['GET'])
 def obtenerExpenseCategory():

@@ -1,18 +1,24 @@
-from src.database.helpeDB import get5RecentExpenses, getEnums, getTopCategories, getCategories
+from src.database.helpeDB import getTotalByMovement, getTopCategories, get5RecentExpenses, getCategories, getEnums
 from src.IA.utils.tools import extrac_category
 
 def getHomeValues():
-    values = []
-    recentExpenses = get5RecentExpenses()
-    typeTransaction = getEnums('MOVEMENT')
-    topCategories, amount = getTopCategories() 
+    totalExpenses = getTotalByMovement('expense')
+    totalIncome = getTotalByMovement('income')
+    totalSavings = getTotalByMovement('savings')
+    mostCategories, mostAmounts = getTopCategories()
+    recent5expenses = get5RecentExpenses()
     categories = getCategories()
-    values.append(recentExpenses)
-    values.append(typeTransaction)
-    values.append(categories)
-    values.append(topCategories)
-    values.append(amount)
-    return values
+    enumsType = getEnums('MOVEMENT')
+    return {
+        'totalExpenses' : totalExpenses,
+        'totalIncome' : totalIncome,
+        'totalSavings' : totalSavings,
+        'mostCategories' : mostCategories,
+        'mostAmounts' : mostAmounts,
+        'recentExpenses' : recent5expenses,
+        'categories' : categories,
+        'enumsType' : enumsType
+    }
 
 
 def PLM_expenses_loading(text, amount):

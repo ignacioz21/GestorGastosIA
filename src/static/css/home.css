@@ -96,7 +96,8 @@
     justify-content: space-between;
     background: linear-gradient(135deg, var(--dashboard-bg), rgba(248, 250, 252, 0.5));
     border-radius: var(--dashboard-radius);
-    padding: 20px;
+    padding: 15px;
+    padding-left: 10px;
     position: relative;
     border: 1px solid rgba(59, 130, 246, 0.1);
     width: 300px;
@@ -146,6 +147,7 @@
     box-shadow: var(--dashboard-shadow-lg);
     border: 1px solid var(--dashboard-border);
     width: 95%;
+    height: 63vh;
 }
 
 /* Títulos de la sección de análisis */
@@ -192,6 +194,7 @@
     grid-template-columns: 1fr 400px;
     gap: 32px;
     align-items: start;
+    align-items: center;
 }
 
 /* Contenedor del chart mejorado */

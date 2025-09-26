@@ -105,7 +105,6 @@ def getCategories():
             cursor.callproc("GetCategoryNames")
             for result in cursor.stored_results():
                 categories = result.fetchall()
-            print(categories)
             return categories
         except Error as e:
             print(f"Error en la funcion 'getCategories' => {e}")
@@ -157,3 +156,26 @@ def getTopCategories():
                 connection.close()
                 print("Conexion categoria cerrada")
 
+
+def getTotalByMovement(movement_type):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)  # importante
+            cursor.callproc("getTotalByMovement", [movement_type])
+
+            result_dict = {"movement": movement_type, "total": 0}
+            for result in cursor.stored_results():
+                rows = result.fetchall()
+                if rows and "TOTAL_AMOUNT" in rows[0]:
+                    result_dict["total"] = rows[0]["TOTAL_AMOUNT"] or 0
+
+            return result_dict
+
+        except Exception as e:
+            print(f"Error en getTotalByMovement: {e}")
+            return {"movement": movement_type, "total": 0}
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
