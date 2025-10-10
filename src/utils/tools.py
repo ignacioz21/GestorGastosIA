@@ -1,4 +1,4 @@
-from src.database.helpeDB import getTotalByMovement, getTopCategories, get5RecentExpenses, getCategories, getEnums
+from src.database.helpeDB import getTotalByMovement, getTopCategories, get5RecentExpenses, getCategories, getEnums, getExpensesByTypeProcedure, getExpensesByCategory, getExpensesByAmountRange, getExpensesByMonthRange
 from src.IA.utils.tools import extrac_category
 
 def getHomeValues():
@@ -19,6 +19,13 @@ def getHomeValues():
         'categories' : categories,
         'enumsType' : enumsType
     }
+
+
+def expensesOptions():
+    pruebaType = getExpensesByTypeProcedure('manual')
+    pruebaCategory = getExpensesByCategory(1)
+    pruebaMontos = getExpensesByAmountRange(10, 15)
+    pruebaFechas = getExpensesByMonthRange(9, 11)
 
 
 def PLM_expenses_loading(text, amount):
