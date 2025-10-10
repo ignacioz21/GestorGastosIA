@@ -1,0 +1,411 @@
+   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+        --primary-green: #145A3E;
+        --primary-blue: #1F4E79;
+        --accent-teal: #14B8A6;
+        --bg-light: #E5E7EB;
+        --surface-white: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-secondary: #6B7280;
+        --border-color: #D1D5DB;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+        --success-green: #10B981;
+        --danger-red: #EF4444;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: var(--bg-light);
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Contenedor principal */
+    .movements-container {
+        padding: 32px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Header section */
+    .movements-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+    }
+
+    .movements-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .movements-title::before {
+        content: '💳';
+        font-size: 36px;
+    }
+
+    /* Calendar card */
+    .calendar-card {
+        background: var(--surface-white);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        box-shadow: var(--shadow-md);
+        min-width: 200px;
+        text-align: center;
+    }
+
+    .calendar-card h3 {
+        margin: 0 0 8px 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    /* Filters section */
+    .filters-section {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .filter-dropdown {
+        position: relative;
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .filter-btn {
+        width: 100%;
+        background: var(--primary-green);
+        color: white;
+        border: none;
+        padding: 16px 20px;
+        border-radius: var(--radius-md);
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .filter-btn:hover {
+        background: #0f4830;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .filter-btn i {
+        transition: transform 0.3s ease;
+    }
+
+    .filter-btn.active i {
+        transform: rotate(180deg);
+    }
+
+    /* Month/Year selector */
+    .period-selector {
+        background: var(--surface-white);
+        border-radius: var(--radius-lg);
+        padding: 20px 32px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow-md);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .period-info {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .period-label {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-secondary);
+    }
+
+    .period-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .amount-display {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, var(--bg-light), rgba(229, 231, 235, 0.5));
+        border-radius: var(--radius-md);
+    }
+
+    .amount-label {
+        font-size: 14px;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    .amount-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--text-dark);
+    }
+
+    /* Expenses list */
+    .expenses-list {
+        background: var(--surface-white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+    }
+
+    /* Expense item card */
+    .expense-item {
+        display: grid;
+        grid-template-columns: 80px 1fr 1fr 1fr auto;
+        gap: 24px;
+        align-items: center;
+        padding: 24px 32px;
+        border-bottom: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+        background: var(--surface-white);
+    }
+
+    .expense-item:hover {
+        background: #F9FAFB;
+        transform: translateX(4px);
+        box-shadow: inset 4px 0 0 var(--primary-green);
+    }
+
+    .expense-item:last-child {
+        border-bottom: none;
+    }
+
+    /* Icon/Avatar */
+    .expense-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #E5E7EB, #F3F4F6);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* Expense details */
+    .expense-details {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .expense-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin: 0;
+    }
+
+    .expense-category {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0;
+    }
+
+    .expense-subcategory {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin: 0;
+    }
+
+    .expense-date {
+        font-size: 16px;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    /* Action buttons */
+    .expense-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-btn {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .action-btn.edit {
+        background: var(--success-green);
+        color: white;
+    }
+
+    .action-btn.edit:hover {
+        background: #059669;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .action-btn.delete {
+        background: var(--danger-red);
+        color: white;
+    }
+
+    .action-btn.delete:hover {
+        background: #DC2626;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 80px 40px;
+        color: var(--text-secondary);
+    }
+
+    .empty-state i {
+        font-size: 64px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0 0 8px 0;
+        color: var(--text-dark);
+    }
+
+    .empty-state p {
+        font-size: 16px;
+        margin: 0;
+    }
+
+    /* Loading state */
+    .loading-skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 2s infinite;
+        border-radius: 8px;
+    }
+
+    @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .expense-item {
+            grid-template-columns: 60px 1fr auto;
+            gap: 16px;
+        }
+
+        .expense-category,
+        .expense-date {
+            display: none;
+        }
+
+        .filters-section {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .movements-container {
+            padding: 16px;
+        }
+
+        .movements-header {
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .calendar-card {
+            width: 100%;
+        }
+
+        .filters-section {
+            grid-template-columns: 1fr;
+        }
+
+        .period-selector {
+            flex-direction: column;
+            gap: 16px;
+            padding: 16px;
+        }
+
+        .expense-item {
+            grid-template-columns: 50px 1fr auto;
+            padding: 16px;
+            gap: 12px;
+        }
+
+        .expense-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+        }
+
+        .expense-name {
+            font-size: 16px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+        }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .expense-item {
+        animation: fadeInUp 0.4s ease-out;
+    }
+
+    .expense-item:nth-child(1) { animation-delay: 0.05s; }
+    .expense-item:nth-child(2) { animation-delay: 0.1s; }
+    .expense-item:nth-child(3) { animation-delay: 0.15s; }
+    .expense-item:nth-child(4) { animation-delay: 0.2s; }
+    .expense-item:nth-child(5) { animation-delay: 0.25s; }
