@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %} Movements - Gastos del Mes {% endblock %}
+
+{% block CSS %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/expense.css') }}">
+{% endblock %}
+{% block content %}
+    <div class="movements-container">
+        <!-- Header Section -->
+        <div class="movements-header">
+            <h1 class="movements-title">Month's expenses</h1>
+            
+            <div class="calendar-card">
+                <h3>Calendar</h3>
+                <p style="color: var(--text-secondary); margin: 0;">📅 Octubre 2025</p>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filter-dropdown">
+                <button class="filter-btn">
+                    <span>Group by</span>
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+            </div>
+            
+            <div class="filter-dropdown">
+                <button class="filter-btn">
+                    <span>Categories</span>
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+            </div>
+            
+            <div class="filter-dropdown">
+                <button class="filter-btn">
+                    <span>Date</span>
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+            </div>
+            
+            <div class="filter-dropdown">
+                <button class="filter-btn">
+                    <span>Amounts</span>
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+            </div>
+            
+            <div class="filter-dropdown">
+                <button class="filter-btn">
+                    <span>Account</span>
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Period Selector -->
+        <div class="period-selector">
+            <div class="period-info">
+                <span class="period-label">Month Year</span>
+            </div>
+            
+            <div class="amount-display">
+                <span class="amount-label">[Amount Expense]</span>
+                <span class="amount-value">$0.00</span>
+            </div>
+        </div>
+
+        <!-- Expenses List -->
+        <div class="expenses-list">
+            {% if expenses %}
+                {% for expense in expenses %}
+                <div class="expense-item">
+                    <div class="expense-icon">
+                        {{ expense.icon | default('💰') }}
+                    </div>
+                    
+                    <div class="expense-details">
+                        <h3 class="expense-name">{{ expense.name }}</h3>
+                    </div>
+                    
+                    <div class="expense-details">
+                        <p class="expense-category">{{ expense.category }}</p>
+                    </div>
+                    
+                    <div class="expense-details">
+                        <p class="expense-date">{{ expense.date }}</p>
+                    </div>
+                    
+                    <div class="expense-actions">
+                        <button class="action-btn edit" title="Editar">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="action-btn delete" title="Eliminar">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Empty State con ejemplo visual -->
+                <div class="expense-item">
+                    <div class="expense-icon">
+                        📝
+                    </div>
+                    
+                    <div class="expense-details">
+                        <h3 class="expense-name">Name</h3>
+                    </div>
+                    
+                    <div class="expense-details">
+                        <p class="expense-category">Category</p>
+                    </div>
+                    
+                    <div class="expense-details">
+                        <p class="expense-date">Date</p>
+                    </div>
+                    
+                    <div class="expense-actions">
+                        <button class="action-btn edit" title="Editar">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="action-btn delete" title="Eliminar">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mensaje de estado vacío -->
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <h3>No hay gastos registrados</h3>
+                    <p>Comienza añadiendo tu primer gasto del mes</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

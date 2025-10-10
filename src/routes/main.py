@@ -76,6 +76,11 @@ def home():
 
     return render_template('home.html', value=valuesHome, chart_data=chart_data)
 
+@bp.route('/lista-gastos', methods=['GET', 'POST'])
+def listaGastos():
+    valuesHome = getHomeValues()
+    return render_template('expense.html', value=valuesHome)
+
 @bp.route('/api/gastos-categoria', methods=['GET'])
 def obtenerExpenseCategory():
     try:
