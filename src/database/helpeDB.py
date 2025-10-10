@@ -179,3 +179,75 @@ def getTotalByMovement(movement_type):
             if connection.is_connected():
                 cursor.close()
                 connection.close()
+
+
+def getExpensesByTypeProcedure(type):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.callproc("getExpensesByTypeOPM", [type])
+            for result in cursor.stored_results():
+                results = result.fetchall()
+            print(results)
+        except Exception as e:
+            print(f"Error en getExpensesByTypeProcedure: {e}")
+            return []
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+
+def getExpensesByCategory(idCategory):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.callproc("getExpensesByCategory", [idCategory])
+            for result in cursor.stored_results():
+                results = result.fetchall()
+            print(results)
+        except Exception as e:
+            print(f"Error en getExpensesByCategory: {e}")
+            return []
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+
+def getExpensesByMonthRange(startMonth, endMonth):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.callproc("getExpensesByMonthRange", [startMonth, endMonth])
+            for result in cursor.stored_results():
+                results = result.fetchall()
+            print(results)
+        except Exception as e:
+            print(f"Error en getExpensesByMonthRange: {e}")
+            return []
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+
+def getExpensesByAmountRange(amountMin, amountMax):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.callproc("getExpensesByAmountRange", [amountMin, amountMax])
+            for result in cursor.stored_results():
+                results = result.fetchall()
+            print(results)
+        except Exception as e:
+            print(f"Error en getExpensesByAmountRange: {e}")
+            return []
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, flash, redirect, url_for, render_template, jsonify
 from src.IA.utils.image_processing import extract_text, extract_text_pdf
-from src.utils.tools import getHomeValues
+from src.utils.tools import getHomeValues, expensesOptions
 from src.database.helpeDB import *
 from datetime import datetime
 
@@ -79,6 +79,8 @@ def home():
 @bp.route('/lista-gastos', methods=['GET', 'POST'])
 def listaGastos():
     valuesHome = getHomeValues()
+    expensesOptions()
+
     return render_template('expense.html', value=valuesHome)
 
 @bp.route('/api/gastos-categoria', methods=['GET'])
