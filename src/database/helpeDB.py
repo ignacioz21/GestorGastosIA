@@ -1,15 +1,76 @@
 from . import get_db_connection
 from datetime import datetime
 from mysql.connector import Error
-from src.IA.utils.tools import extrac_category, extract_bills_atributes, change_date_format
-from src.utils.tools import *
 
-def add_expense(category, type, movement, name, amount, date):
+# ============================================
+# USER FUNCTIONS
+# ============================================
+
+def create_user(name, email, password_hash):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.callproc("createUser", [name, email, password_hash])
+            for result in cursor.stored_results():
+                user = result.fetchone()
+            connection.commit()
+            return user
+        except Error as e:
+            print(f"Error creating user: {e}")
+            return None
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+
+def get_user_by_email(email):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.callproc("getUserByEmail", [email])
+            for result in cursor.stored_results():
+                user = result.fetchone()
+            return user
+        except Error as e:
+            print(f"Error getting user by email: {e}")
+            return None
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+
+def get_user_by_id(user_id):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.callproc("getUserById", [user_id])
+            for result in cursor.stored_results():
+                user = result.fetchone()
+            return user
+        except Error as e:
+            print(f"Error getting user by id: {e}")
+            return None
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+
+# ============================================
+# EXPENSE FUNCTIONS (user-scoped)
+# ============================================
+
+def add_expense(user_id, category, type, movement, name, amount, date):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor()
-            cursor.callproc("addExpense", [category, type, movement, name, amount, date])
+            cursor.callproc("addExpense", [user_id, category, type, movement, name, amount, date])
             connection.commit()
             return True
         except Error as e:
@@ -19,17 +80,16 @@ def add_expense(category, type, movement, name, amount, date):
             if connection.is_connected():
                 cursor.close()
                 connection.close()
-                print("MySQL connection is closed.")
 
-def get_expenses():
+
+def get_expenses(user_id):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
-            cursor.callproc("getExpenses")
-            expenses = cursor.fetchall()
-            cursor.close()
-            connection.close()
+            cursor.callproc("getExpenses", [user_id])
+            for result in cursor.stored_results():
+                expenses = result.fetchall()
             return expenses
         except Error as e:
             print(f"Error fetching expenses: {e}")
@@ -38,8 +98,25 @@ def get_expenses():
             if connection.is_connected():
                 cursor.close()
                 connection.close()
-                print("MySQL connection closed")
     return []
+
+
+def delete_expense(expense_id, user_id):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.callproc("deleteExpense", [expense_id, user_id])
+            connection.commit()
+            return True
+        except Error as e:
+            print(f"Error deleting expense: {e}")
+            return False
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
 
 def getEnums(columName):
     connection = get_db_connection()
@@ -52,7 +129,7 @@ def getEnums(columName):
             for result in cursor.stored_results():
                 values = result.fetchall()
                 dirtyEnums = [column[list(column.keys())[0]] for column in values]
-            
+
             dirtyEnums = dirtyEnums[0]
             cleanEnums = dirtyEnums.replace("enum(","").replace(")", "")
 
@@ -67,22 +144,24 @@ def getEnums(columName):
             if connection.is_connected():
                 cursor.close()
                 connection.close()
-                print("MySQL connection closed")
 
 
-def addCategory(name):
+# ============================================
+# CATEGORY FUNCTIONS (user-scoped)
+# ============================================
+
+def addCategory(user_id, name):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor()
-            cursor.callproc("addCategory", [name])
+            cursor.callproc("addCategory", [user_id, name])
 
             for result in cursor.stored_results():
                 row = result.fetchone()
                 if row:
                     idCategory = row[0]
 
-            print(f"Categoria agregada: {name} con ID {idCategory}")
             connection.commit()
             return idCategory
 
@@ -95,14 +174,14 @@ def addCategory(name):
                 cursor.close()
             if connection.is_connected():
                 connection.close()
-                print("MySQL disconnected")
 
-def getCategories():
+
+def getCategories(user_id):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
-            cursor.callproc("GetCategoryNames")
+            cursor.callproc("GetCategoryNames", [user_id])
             for result in cursor.stored_results():
                 categories = result.fetchall()
             return categories
@@ -113,15 +192,18 @@ def getCategories():
             if connection.is_connected():
                 cursor.close()
                 connection.close()
-                print("MySQL connection closed")
 
 
-def get5RecentExpenses():
+# ============================================
+# DASHBOARD FUNCTIONS (user-scoped)
+# ============================================
+
+def get5RecentExpenses(user_id):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
-            cursor.callproc("get5Expenses")
+            cursor.callproc("get5Expenses", [user_id])
             for result in cursor.stored_results():
                 expenses = result.fetchall()
             return expenses
@@ -132,16 +214,14 @@ def get5RecentExpenses():
             if connection.is_connected():
                 cursor.close()
                 connection.close()
-                print("MySQL connection closed")
 
 
-
-def getTopCategories():
+def getTopCategories(user_id):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor()
-            cursor.callproc("getTopCategories")
+            cursor.callproc("getTopCategories", [user_id])
             for result in cursor.stored_results():
                 results = result.fetchall()
             categories = [row[0] for row in results]
@@ -154,15 +234,14 @@ def getTopCategories():
             if connection.is_connected():
                 cursor.close()
                 connection.close()
-                print("Conexion categoria cerrada")
 
 
-def getTotalByMovement(movement_type):
+def getTotalByMovement(user_id, movement_type):
     connection = get_db_connection()
     if connection:
         try:
-            cursor = connection.cursor(dictionary=True)  # importante
-            cursor.callproc("getTotalByMovement", [movement_type])
+            cursor = connection.cursor(dictionary=True)
+            cursor.callproc("getTotalByMovement", [user_id, movement_type])
 
             result_dict = {"movement": movement_type, "total": 0}
             for result in cursor.stored_results():
@@ -181,15 +260,19 @@ def getTotalByMovement(movement_type):
                 connection.close()
 
 
-def getExpensesByTypeProcedure(type):
+# ============================================
+# FILTER FUNCTIONS (user-scoped)
+# ============================================
+
+def getExpensesByTypeProcedure(user_id, type):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
-            cursor.callproc("getExpensesByTypeOPM", [type])
+            cursor.callproc("getExpensesByTypeOPM", [user_id, type])
             for result in cursor.stored_results():
                 results = result.fetchall()
-            print(results)
+            return results
         except Exception as e:
             print(f"Error en getExpensesByTypeProcedure: {e}")
             return []
@@ -199,15 +282,15 @@ def getExpensesByTypeProcedure(type):
                 connection.close()
 
 
-def getExpensesByCategory(idCategory):
+def getExpensesByCategory(user_id, idCategory):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
-            cursor.callproc("getExpensesByCategory", [idCategory])
+            cursor.callproc("getExpensesByCategory", [user_id, idCategory])
             for result in cursor.stored_results():
                 results = result.fetchall()
-            print(results)
+            return results
         except Exception as e:
             print(f"Error en getExpensesByCategory: {e}")
             return []
@@ -217,15 +300,15 @@ def getExpensesByCategory(idCategory):
                 connection.close()
 
 
-def getExpensesByMonthRange(startMonth, endMonth):
+def getExpensesByMonthRange(user_id, startMonth, endMonth):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
-            cursor.callproc("getExpensesByMonthRange", [startMonth, endMonth])
+            cursor.callproc("getExpensesByMonthRange", [user_id, startMonth, endMonth])
             for result in cursor.stored_results():
                 results = result.fetchall()
-            print(results)
+            return results
         except Exception as e:
             print(f"Error en getExpensesByMonthRange: {e}")
             return []
@@ -235,15 +318,15 @@ def getExpensesByMonthRange(startMonth, endMonth):
                 connection.close()
 
 
-def getExpensesByAmountRange(amountMin, amountMax):
+def getExpensesByAmountRange(user_id, amountMin, amountMax):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
-            cursor.callproc("getExpensesByAmountRange", [amountMin, amountMax])
+            cursor.callproc("getExpensesByAmountRange", [user_id, amountMin, amountMax])
             for result in cursor.stored_results():
                 results = result.fetchall()
-            print(results)
+            return results
         except Exception as e:
             print(f"Error en getExpensesByAmountRange: {e}")
             return []

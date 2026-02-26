@@ -1,31 +1,25 @@
-from src.database.helpeDB import getTotalByMovement, getTopCategories, get5RecentExpenses, getCategories, getEnums, getExpensesByTypeProcedure, getExpensesByCategory, getExpensesByAmountRange, getExpensesByMonthRange
+from src.database.helpeDB import getTotalByMovement, getTopCategories, get5RecentExpenses, getCategories, getEnums
 from src.IA.utils.tools import extrac_category
 
-def getHomeValues():
-    totalExpenses = getTotalByMovement('expense')
-    totalIncome = getTotalByMovement('income')
-    totalSavings = getTotalByMovement('savings')
-    mostCategories, mostAmounts = getTopCategories()
-    recent5expenses = get5RecentExpenses()
-    categories = getCategories()
+
+def getHomeValues(user_id):
+    totalExpenses = getTotalByMovement(user_id, 'expense')
+    totalIncome = getTotalByMovement(user_id, 'income')
+    totalSavings = getTotalByMovement(user_id, 'savings')
+    mostCategories, mostAmounts = getTopCategories(user_id)
+    recent5expenses = get5RecentExpenses(user_id)
+    categories = getCategories(user_id)
     enumsType = getEnums('MOVEMENT')
     return {
-        'totalExpenses' : totalExpenses,
-        'totalIncome' : totalIncome,
-        'totalSavings' : totalSavings,
-        'mostCategories' : mostCategories,
-        'mostAmounts' : mostAmounts,
-        'recentExpenses' : recent5expenses,
-        'categories' : categories,
-        'enumsType' : enumsType
+        'totalExpenses': totalExpenses,
+        'totalIncome': totalIncome,
+        'totalSavings': totalSavings,
+        'mostCategories': mostCategories,
+        'mostAmounts': mostAmounts,
+        'recentExpenses': recent5expenses,
+        'categories': categories,
+        'enumsType': enumsType
     }
-
-
-def expensesOptions():
-    pruebaType = getExpensesByTypeProcedure('manual')
-    pruebaCategory = getExpensesByCategory(1)
-    pruebaMontos = getExpensesByAmountRange(10, 15)
-    pruebaFechas = getExpensesByMonthRange(9, 11)
 
 
 def PLM_expenses_loading(text, amount):
@@ -36,4 +30,3 @@ def PLM_expenses_loading(text, amount):
         'text': text,
         'amount': amount
     }
-

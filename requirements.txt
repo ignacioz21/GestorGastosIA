@@ -5,3 +5,5 @@ pdfplumber
 Pillow
 joblib
 scikit-learn
+python-dotenv
+bcrypt
