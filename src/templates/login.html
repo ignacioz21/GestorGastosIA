@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <title>Login - BOTGET</title>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-logo">BOTGET</h1>
+                <p class="auth-subtitle">Inicia sesion en tu cuenta</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="auth-form">
+                <div class="form-group">
+                    <label for="email">
+                        <i class="bi bi-envelope"></i>
+                        Email
+                    </label>
+                    <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <i class="bi bi-lock"></i>
+                        Contrasena
+                    </label>
+                    <input type="password" id="password" name="password" placeholder="Tu contrasena" required>
+                </div>
+
+                <button type="submit" class="auth-btn">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    Iniciar Sesion
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>No tienes cuenta? <a href="{{ url_for('auth.register') }}">Registrate</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
